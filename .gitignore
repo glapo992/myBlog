@@ -1,5 +1,6 @@
-app.db
 __pycache__
 app/__pycache__
 app/migrations/__pycache__
 app/migrations/__pycache__
+venv/
+./venv/*

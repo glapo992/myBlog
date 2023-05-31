@@ -30,7 +30,12 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('email already used')
         
-class EditProfileForm(FlaskForm):
+"""class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()]) 
     about_me = TextAreaField('About me', validators=[Length(min=0, max=150)])
-    submit   = SubmitField('Submit')
+    submit   = SubmitField('Submit')"""
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')

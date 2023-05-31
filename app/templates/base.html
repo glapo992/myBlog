@@ -17,7 +17,7 @@
         <a href="{{url_for('index')}}">home</a>
         <a href="{{url_for('project')}}">proj</a>
         {% if current_user.is_anonymous %}    
-        <!-- current_user.is_anonymous is True only when the user is not logged in-->
+        <!-- current_user.is_anonymous is True when the user is not logged in-->
         <a href="{{url_for('login')}}">login</a>
         <a href="{{url_for('registration')}}">registration</a>
         {% else %}

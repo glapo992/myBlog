@@ -10,6 +10,18 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 
+#------NOT A VIEW-----------
+# the decorated function is executed right before ANY view function in the application.
+@app.before_request 
+def before_request():
+    """records the timedate of the visit of a user and saves it in the db"""
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
+#---------------------
+
+
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -85,6 +97,7 @@ def user (username):
 @app.route('/user/current_user.username/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
 @login_required
 def edit_profile():
+    """page to edit the profile info of the user, accessed only from the user's page after a login"""
     form = EditProfileForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -95,18 +108,8 @@ def edit_profile():
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
+    print(repr(form.validate_on_submit()))
     return render_template('edit_profile.html', form = form, title = 'edit profile')
-
-
-@app.before_request # the decorated function is executed right before any view function in the application.
-def before_request():
-    """records the moment of the visit of a user and saves it in the db"""
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.utcnow()
-        db.session.commit()
-
-
-
 
 #----------------------------------------------------------------------------------------
 

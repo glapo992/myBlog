@@ -2,35 +2,38 @@
 from app import db
 from datetime import datetime 
 
-# login 
+# login stuff
 from flask_login import UserMixin # generic login implementations suitable for most user model classes
 from app import login
 
 # pw hashing-> already provided in flask
 from werkzeug.security import generate_password_hash, check_password_hash
-from hashlib import md5 # just for Gravatar service for avatar images
+from hashlib import md5 # optional, just for Gravatar service for avatar images
 
-""" after a modificaion in the models, the migrate class will generate a script with the database version. run commands in the terminal:
-flask db migrate -m <optional comments> --> creates the script that update the db with modifications on models
+""" after a modificaion in the models, the migrate class will generate a script with the database version. 
+run commands in the terminal:
+flask db migrate -m <optional comments> --> creates the script that update the db with modifications on models (sort of git)
 flask db upgrade --> applies the script to the database
 flask db downgrade --> retunrs to a previous version of the db 
 
-to add a record, run in the terminal:
+to add a record in the terminal:
+python3
 >>> from app import app, db
 >>> from app.models import User, Posts
 >>> app.app_context().push()      # allows sqlalchemy to acceed the ap.config without give app as argument
 >>> u = Users(username='jj', email='jj@bravo.it')
 >>> db.session.add(u)
->>> db.session.commit()
+>>> db.session.commit()  # write the data in the database
 
 """
 
 class Users(UserMixin ,db.Model): # added UserMixin at the user class
-    """
+    """ some of the user already created for testing:
     username:pw
     - Giovanni:il_paradiso
     - Aldo:della
     - Giacomino:brugola
+    - dr:pw
     """
     id       = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(64), index = True, unique = True)
@@ -59,8 +62,15 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         """
         return check_password_hash(self.pw_hash, password=password)
     #-------------------------------
-    def avatar(self, size):
-        """generate an avatar image form the md5 has of the email"""
+   
+    def avatar(self, size:int)->str:
+        """generate an avatar image form the md5 hash of the email and return a link to insert in the img tag in html
+
+        :param size: the dimension in px of the image(128, 64, 32 etc)
+        :type size: int
+        :return: link to the source
+        :rtype: str
+        """
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()  # obtain the digest of the md5 hash of the email
         return 'https://www.gravatar.com/avatar/{}?d=robohash&s={}&r=r'.format(digest, size)    # just the link of the service. can be added an r parameter fro the rating of the image (acc values are: g, pg, r, x)
     

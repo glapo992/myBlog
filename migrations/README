@@ -1,1 +1,6 @@
 Single-database configuration for Flask.
+
+basically is like git, 
+when a change is made here in the models, run 'flask db migrate' creates a script to apply only the latest updates to the db.
+
+if there are 2 db, one for dev and one for prod, create the script on the dev, copy/paste it in the prod migrate folder of dev env and run it with 'flask db upgrade'
