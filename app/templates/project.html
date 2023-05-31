@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- current_user.username is the username of the current logged user -->
+<h1> the secret project only {{ current_user.username }} can see</h1>
+
+{% for post in posts %}
+<div><p> {{ post.body }}</p>
+</div>
+{% endfor %}
+{% endblock content %}

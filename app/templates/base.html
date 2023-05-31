@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>welcome to the page</title>
+    </head>
+    {% endif %}
+<body>
+    <!--links with the url for method - redirect to the function and not the page-->
+    <div>
+        <p>a fancy navbar: 
+        <a href="{{url_for('index')}}">home</a>
+        <a href="{{url_for('project')}}">proj</a>
+        {% if current_user.is_anonymous %}    
+        <!-- current_user.is_anonymous is True only when the user is not logged in-->
+        <a href="{{url_for('login')}}">login</a>
+        <a href="{{url_for('registration')}}">registration</a>
+        {% else %}
+        <a href="{{url_for('user', username=current_user.username)}}">{{ current_user.username }}</a>
+        <a href="{{url_for('logout')}}">logout</a>
+        </p>
+        {% endif %}
+
+
+    </div>
+    <!-- flash messages handler-->
+    <div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li> {{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
