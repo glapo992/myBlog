@@ -10,7 +10,7 @@ from flask_login import LoginManager # Login
 
 #FLASK SETTINGS---------------------
 app = Flask(__name__)
-app.config.from_object(Config) # import configs from the Class Config in the as-named module. the values are accesseb wuth a dict-like statement (app.config['SECRET_KEY'])
+app.config.from_object(Config) # import configs from the Class Config in the as-named module. the values are accessed with a dict-like statement (app.config['SECRET_KEY'])
 #-----------------------------------
 
 

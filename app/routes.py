@@ -99,16 +99,23 @@ def user (username):
 def edit_profile():
     """page to edit the profile info of the user, accessed only from the user's page after a login"""
     form = EditProfileForm()
+    if form.is_submitted():
+        print ("submitted")
+    if form.validate():
+        print ("valid")
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
         flash('changes saved')
-        return redirect(url_for('user'))
+        return redirect(url_for('edit_profile'))
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    print(repr(form.validate_on_submit()))
+        print('in elif')
+    print('validation: ', (repr(form.validate_on_submit())))
+    print('errors: ', form.errors)
+    print('token: '+ str(form.csrf_token))
     return render_template('edit_profile.html', form = form, title = 'edit profile')
 
 #----------------------------------------------------------------------------------------
