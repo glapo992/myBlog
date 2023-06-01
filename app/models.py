@@ -27,6 +27,16 @@ python3
 
 """
 
+
+# this table is not in a model -- aux table with foreign keys from another table 
+# is a circular reference, where a user has a relation with another user (follow-follow)
+# since is used by user class, must be declaed beofre it
+followers = db.Table('followers', 
+                     db.Column('follower_id', db.Integer, db.ForeignKey('users.id')), # foriegn_key
+                     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))  # foriegn_key
+                     )
+
+
 class Users(UserMixin ,db.Model): # added UserMixin at the user class
     """ some of the user already created for testing:
     username:pw
@@ -35,14 +45,18 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
     - Giacomino:brugola
     - dr:pw
     """
-    id       = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(64), index = True, unique = True)
-    email    = db.Column(db.String(64), index = True, unique = True)
-    pw_hash  = db.Column(db.String(128))
-    posts    = db.relationship('Posts', backref = 'author', lazy = 'dynamic') # reference to the post Model class(not table name!!), is not a db field but a view of the realtionship
-    about_me = db.Column(db.String(150))
-    last_seen= db.Column(db.DateTime, default = datetime.utcnow)
-
+    id        = db.Column      (db.Integer, primary_key = True)
+    username  = db.Column      (db.String(64), index = True, unique = True)
+    email     = db.Column      (db.String(64), index = True, unique = True)
+    pw_hash   = db.Column      (db.String(128))
+    posts     = db.relationship('Posts', backref = 'author', lazy = 'dynamic') # reference to the post Model class(not table name!!), is not a db field but a view of the realtionship
+    about_me  = db.Column      (db.String(150))
+    last_seen = db.Column      (db.DateTime, default = datetime.utcnow)
+    followed  = db.relationship('Users', secondary = followers,   # db.relationshp defines a relation between tables. here is used to link User to another User (self refered). in this table left User follows the right User 
+                                primaryjoin=(followers.c.follower_id == id),    # condition that links the left side entity (the follower user) with the association table -- follower_id is the column of the association table.
+                                secondaryjoin=(followers.c.followed_id == id),  # like the primaryjoin, but now is used followed -> followers 
+                                backref = db.backref('followers', lazy = 'dynamic'),lazy = 'dynamic')  # backref defines how this relationship will be accessed from the right side entity
+ 
     # hashing password--------------
     def set_password(self, password:str)->str:
         """generates a hash for the given pw and set it as param of the class
@@ -61,8 +75,30 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         :rtype: bool
         """
         return check_password_hash(self.pw_hash, password=password)
-    #-------------------------------
-   
+    
+    # followers managing----------
+    def is_following(self, user):
+        """ queries the followed relationship and search a link between the users"""
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0 # count method returns the number of results
+    
+    def follow(self, user):
+        """ add a user to the relationship table of the current user"""
+        if not self.is_following(user):
+            self.followed.append(user) #append add a new record on the table
+
+    def unfollow(self, user):
+        """ remove a user from the table of the current user"""
+        if  self.is_following(user):
+            self.followed.remove(user) # remove delete an existing record
+
+    def followed_posts(self):
+        """ search and order all the posts of all followers of the current user"""
+        return Posts.query.join(followers,                      # joins Posts and follower table with the condition followed_id == Posts.user_id)
+                                 (followers.c.followed_id == Posts.user_id)).filter(    # filter fetch only results relative to the user
+                                    followers.c.followed_di == self.id).order_by(
+                                         Posts.timestamp.desc()
+                                )
+
     def avatar(self, size:int)->str:
         """generate an avatar image form the md5 hash of the email and return a link to insert in the img tag in html
 
@@ -81,11 +117,14 @@ class Posts(db.Model):
     id        = db.Column(db.Integer, primary_key = True)
     body      = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index = True, default=datetime.utcnow)  # utcnow is a function and is passed completely (without "()"), not the return value, so the timestamp is converted to the user's machine time
-    user_id   = db.Column(db.Integer, db.ForeignKey('users.id')) # how to set a foregin key. the user table is used, not the class User above
+    user_id   = db.Column(db.Integer, db.ForeignKey('users.id')) # how to set a foregin key. the user table is used, not the class User as above
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
     
+
+
+
 
 @login.user_loader
 def load_user(id):
