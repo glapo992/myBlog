@@ -82,7 +82,7 @@ def registration():
 
 #------------USER PAGE--------------------------------------------------------------
 @app.route('/user/<username>')
-@login_required
+@login_required    # view is protected by non-logged users
 def user (username):
     user = Users.query.filter_by(username = username).first_or_404() # this method returns a 404 error if user is null
     
@@ -95,10 +95,10 @@ def user (username):
 
 
 @app.route('/user/current_user.username/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
-@login_required
+@login_required  # view is protected by non-logged users
 def edit_profile():
     """page to edit the profile info of the user, accessed only from the user's page after a login"""
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)   # current_user.username is passed to the function of control purposes
     if form.is_submitted():
         print ("submitted")
     if form.validate():
@@ -112,10 +112,9 @@ def edit_profile():
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-        print('in elif')
-    print('validation: ', (repr(form.validate_on_submit())))
-    print('errors: ', form.errors)
-    print('token: '+ str(form.csrf_token))
+    # print('validation: ', (repr(form.validate_on_submit())))
+    # print('errors: ', form.errors)
+    # print('token: '+ str(form.csrf_token))
     return render_template('edit_profile.html', form = form, title = 'edit profile')
 
 #----------------------------------------------------------------------------------------

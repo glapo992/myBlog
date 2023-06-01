@@ -4,7 +4,7 @@ from app import app, db
 
 # this is added so the app can run calling this file with python and can set port and debug mode
 # without this statement, run in the root folder the command flask run
-app.run(port=5001, debug=True)
+#app.run(port=5001, debug=True)
 
 
 
