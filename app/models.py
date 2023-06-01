@@ -77,28 +77,33 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         return check_password_hash(self.pw_hash, password=password)
     
     # followers managing----------
-    def is_following(self, user):
+    def is_following(self, user)->int:
         """ queries the followed relationship and search a link between the users"""
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0 # count method returns the number of results
     
-    def follow(self, user):
+    def follow(self, user)->None:
         """ add a user to the relationship table of the current user"""
         if not self.is_following(user):
             self.followed.append(user) #append add a new record on the table
 
-    def unfollow(self, user):
+    def unfollow(self, user)->None:
         """ remove a user from the table of the current user"""
         if  self.is_following(user):
             self.followed.remove(user) # remove delete an existing record
 
     def followed_posts(self):
-        """ search and order all the posts of all followers of the current user"""
-        return Posts.query.join(followers,                      # joins Posts and follower table with the condition followed_id == Posts.user_id)
+        """ search and order all the posts of all followers of the current user, and his owns"""
+        # first query search posts of followed people
+        followed = Posts.query.join(followers,                                          # joins Posts and follower table with the condition followed_id == Posts.user_id)
                                  (followers.c.followed_id == Posts.user_id)).filter(    # filter fetch only results relative to the user
-                                    followers.c.followed_di == self.id).order_by(
-                                         Posts.timestamp.desc()
-                                )
+                                    followers.c.follower_id == self.id)
+        # second query search for self user posts  
+        own = Posts.query.filter_by(user_id = self.id)
+        # all posts are combined and ordered with union statement
+        return followed.union(own).order_by(Posts.timestamp.desc())
 
+
+    # avatar pic--------------------
     def avatar(self, size:int)->str:
         """generate an avatar image form the md5 hash of the email and return a link to insert in the img tag in html
 
