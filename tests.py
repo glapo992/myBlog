@@ -1,6 +1,6 @@
 """used to run some unit test. first used to check followers feature.
 
-the finctions that executes tests must be called "tast_<funct_name>
+the functions that executes tests must use the name pattern: "tast_<funct_name>
 run in terminal : python3 tests.py"""
 import os
 from datetime import datetime, timedelta
