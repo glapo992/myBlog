@@ -7,7 +7,7 @@ LABEL editor="glapo"
 WORKDIR /usr/src/app
 
 #execute the copy form the local folder to the root folder of the workdir
-COPY . ..
+COPY . .
 
 # run a command to install dependencies
 ENV PYTHONUNBUFFERED=1

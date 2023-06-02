@@ -12,6 +12,8 @@ from werkzeug.urls import url_parse
 # follow/unfollow
 from app.forms import EmptyForm
 
+
+
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
 @app.before_request 
@@ -92,8 +94,8 @@ def user (username):
         {'author': user, 'body': 'Test post #1'},
         {'author': user, 'body': 'Test post #2'}
     ]
-    
-    return render_template('user.html', user=user, posts=posts, title = user.username)
+    form = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
+    return render_template('user.html', user=user, posts=posts, title = user.username, form = form)
 
 
 @app.route('/user/current_user.username/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
@@ -110,7 +112,7 @@ def edit_profile():
         current_user.about_me = form.about_me.data
         db.session.commit()
         flash('changes saved')
-        return redirect(url_for('edit_profile'))
+        return redirect(url_for('user', username=current_user.username))
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
@@ -119,9 +121,33 @@ def edit_profile():
     # print('token: '+ str(form.csrf_token))
     return render_template('edit_profile.html', form = form, title = 'edit profile')
 
-@app.route('/')
+@app.route('/follow/<username>', methods=['POST'])
 @login_required
 def follow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(username = username).first()  #search on database the user with the given username
+        # managing of wrong cases
+        if user is None:
+            flash('user {} not found'.format(username))
+            return redirect (url_for('index'))
+        if user == current_user:
+            flash ('no autoerothism please')
+            return redirect(url_for('user', username=username))
+        # calls of the follow function
+        current_user.follow(user)
+        db.session.commit()
+        flash ('now you follow {}'.format(username))
+        return redirect (url_for('user', username=username))
+    else :
+        return redirect (url_for('index'))
+    
+
+
+@app.route('/unfollow/<username>', methods=['POST'])
+@login_required
+def unfollow(username):
+    # same as follow, but unfollow() is used here
     form = EmptyForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(username = username).first()
@@ -129,14 +155,15 @@ def follow(username):
             flash('user {} not found'.format(username))
             return redirect (url_for('index'))
         if user == current_user:
-            flash ('no autoerotism please')
+            flash ('no autoerothism please')
             return redirect(url_for('user', username=username))
-        current_user.follow(user)
+        current_user.unfollow(user)
         db.session.commit()
-        flash ('now you follow {}'.format(username))
+        flash ('now you don\' follow {} anymore'.format(username))
         return redirect (url_for('user', username=username))
     else :
         return redirect (url_for('index'))
+
 #----------------------------------------------------------------------------------------
 
 @app.route('/project')

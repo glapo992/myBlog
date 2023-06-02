@@ -40,9 +40,6 @@ followers = db.Table('followers',
 class Users(UserMixin ,db.Model): # added UserMixin at the user class
     """ some of the user already created for testing:
     username:pw
-    - Giovanni:il_paradiso
-    - Aldo:della
-    - Giacomino:brugola
     - dr:pw
     """
     id        = db.Column      (db.Integer, primary_key = True)
@@ -76,7 +73,7 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         """
         return check_password_hash(self.pw_hash, password=password)
     
-    # followers managing----------
+    # followers managing---------------------
     def is_following(self, user)->int:
         """ queries the followed relationship and search a link between the users"""
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0 # count method returns the number of results
