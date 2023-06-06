@@ -10,6 +10,8 @@ from app import login
 from werkzeug.security import generate_password_hash, check_password_hash
 from hashlib import md5 # optional, just for Gravatar service for avatar images
 
+
+
 """ after a modificaion in the models, the migrate class will generate a script with the database version. 
 run commands in the terminal:
 flask db migrate -m <optional comments> --> creates the script that update the db with modifications on models (sort of git)
@@ -86,7 +88,7 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
     def unfollow(self, user)->None:
         """ remove a user from the table of the current user"""
         if  self.is_following(user):
-            self.followed.remove(user) # remove delete an existing record
+            self.followed.remove(user) # remove an existing record
 
     def followed_posts(self):
         """ search and order all the posts of all followers of the current user, and his owns"""
@@ -113,7 +115,7 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         return 'https://www.gravatar.com/avatar/{}?d=robohash&s={}&r=r'.format(digest, size)    # just the link of the service. can be added an r parameter fro the rating of the image (acc values are: g, pg, r, x)
     
     def __repr__(self):
-        return'<User {}>'.format(self.username)
+        return'<User: {}>'.format(self.username)
     
 class Posts(db.Model):
     id        = db.Column(db.Integer, primary_key = True)
@@ -122,7 +124,7 @@ class Posts(db.Model):
     user_id   = db.Column(db.Integer, db.ForeignKey('users.id')) # how to set a foregin key. the user table is used, not the class User as above
 
     def __repr__(self):
-        return '<Post {}>'.format(self.body)
+        return '<Post: {}>'.format(self.body)
     
 
 

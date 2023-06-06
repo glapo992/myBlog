@@ -12,7 +12,9 @@ from werkzeug.urls import url_parse
 # follow/unfollow
 from app.forms import EmptyForm
 
-
+# form insertion
+from app.forms import PostForm
+from app.models import Posts
 
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
@@ -95,6 +97,9 @@ def user (username):
         {'author': user, 'body': 'Test post #2'}
     ]
     form = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
+    
+
+
     return render_template('user.html', user=user, posts=posts, title = user.username, form = form)
 
 
@@ -171,17 +176,31 @@ def unfollow(username):
 
 #----------------------------------------------------------------------------------------
 
-@app.route('/project')
+@app.route('/project',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
 def project():
-    posts =  [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('project.html', title = "proj", posts = posts)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Posts(body= form.post.data, author = current_user)  
+        db.session.add(post)
+        db.session.commit()
+        flash('posted!')
+        form.post.data = ""
+
+    posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
+    form_del = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
+    return render_template('project.html',form = form, form_del =  form_del,title = "proj", posts = posts)
+
+
+@app.route('/delete_post/<del_post_id>' ,methods=['POST'])
+@login_required
+def delete_post(del_post_id):
+    """ function to delete a record from the database"""
+    form = EmptyForm()
+    if form.validate_on_submit():
+        del_post = Posts.query.filter_by(id = del_post_id).first()
+        db.session.delete(del_post)
+        db.session.commit()
+        flash('post deleted succesfully')
+    return redirect (url_for('project'))
+    
