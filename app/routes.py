@@ -9,6 +9,10 @@ from app.models import Users
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
+# follow/unfollow
+from app.forms import EmptyForm
+
+
 
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
@@ -82,7 +86,7 @@ def registration():
 
 #------------USER PAGE--------------------------------------------------------------
 @app.route('/user/<username>')
-@login_required
+@login_required    # view is protected by non-logged users
 def user (username):
     user = Users.query.filter_by(username = username).first_or_404() # this method returns a 404 error if user is null
     
@@ -90,26 +94,80 @@ def user (username):
         {'author': user, 'body': 'Test post #1'},
         {'author': user, 'body': 'Test post #2'}
     ]
-    
-    return render_template('user.html', user=user, posts=posts, title = user.username)
+    form = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
+    return render_template('user.html', user=user, posts=posts, title = user.username, form = form)
 
 
-@app.route('/user/current_user.username/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
-@login_required
-def edit_profile():
+@app.route('/user/<username>/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
+@login_required  # view is protected by non-logged users
+def edit_profile(username):
     """page to edit the profile info of the user, accessed only from the user's page after a login"""
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)   # current_user.username is passed to the function of control purposes
+    if form.is_submitted():
+        print ("submitted")
+    if form.validate():
+        print ("valid")
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
         flash('changes saved')
-        return redirect(url_for('user'))
+        return redirect(url_for('user', username=current_user.username))
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    print(repr(form.validate_on_submit()))
-    return render_template('edit_profile.html', form = form, title = 'edit profile')
+    # print('validation: ', (repr(form.validate_on_submit())))
+    # print('errors: ', form.errors)
+    # print('token: '+ str(form.csrf_token))
+    return render_template('edit_profile.html', form = form, title = 'edit profile - {}'.format(current_user.username))
+
+@app.route('/follow/<username>', methods=['POST'])
+@login_required
+def follow(username):
+    """this function does't have a view but performs an action and returns another view"""
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(username = username).first()  #search on database the user with the given username
+        # managing of wrong cases
+        if user is None:
+            flash('user {} not found'.format(username))
+            return redirect (url_for('index'))
+        if user == current_user:
+            flash ('no autoerothism please')
+            return redirect(url_for('user', username=username))
+        # calls of the follow function
+        current_user.follow(user)
+        db.session.commit()
+        flash ('now you follow {}'.format(username))
+        return redirect (url_for('user', username=username))
+    else :
+        return redirect (url_for('index'))
+    
+
+
+@app.route('/unfollow/<username>', methods=['POST'])
+@login_required
+def unfollow(username):
+    """this function does't have a view but performs an action and returns another view"""
+    # same as follow, but unfollow() is used here
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(username = username).first()
+        if user is None:
+            flash('user {} not found'.format(username))
+            return redirect (url_for('index'))
+        if user == current_user:
+            flash ('no autoerothism please')
+            return redirect(url_for('user', username=username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash ('now you don\' follow {} anymore'.format(username))
+        return redirect (url_for('user', username=username))
+    else :
+        return redirect (url_for('index'))
+
+# this is another methot to add a routing rule to a function, is the same than the decorator
+#app.add_url_rule('/edit_profile', 'edit_profile', edit_profile,  methods=['GET', 'POST'])
 
 #----------------------------------------------------------------------------------------
 
