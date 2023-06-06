@@ -8,13 +8,28 @@ class Config(object):
     #! REMOVE THE .flaskenv FILE FROM GIT BEFORE DEPLOY AND SET A REAL SECRET_KEY
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_password' # var used as key for cryptogtaphy and tokens, used by wtf 
     
-    
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'+ os.path.join(basedir, 'app.db') # reading config. if no path to db, it creates one in the basedir
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # tryes to reate a connection with postgres db reading from configs, if cant, uses the local db
+    # TODO: remove the local db in prod 
+    try:
+        PASSWORD = os.environ.get('DB_PASSWORD') 
+        USERNAME = os.environ.get('DB_USERNAME') 
+        HOST     = os.environ.get('DB_HOST') 
+        DB_NAME  = os.environ.get('DB_DB_NAME') 
+
+        if USERNAME and PASSWORD and HOST and DB_NAME:
+            db_url = "postgresql://{}:{}@{}/{}".format(USERNAME,PASSWORD,HOST,DB_NAME)
+        else:
+            raise KeyError('Some necessary environment variable(s) are not defined')
+        SQLALCHEMY_DATABASE_URI = db_url
+    except:  
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'+ os.path.join(basedir, 'app.db') # reading config. if no path to db, it creates one in the basedir
+        SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # next 2 vars activates the development mode, which allows to access to a debugger from the brewser and auto reload the server when a chage in a file is detected, never use in production
     FLASK_ENV=os.environ.get('FLASK_ENV')   # can be development or production
     FLASK_DEBUG=os.environ.get('FLASK_DEBUG') # this is a bool, only accepts 1 or 0
+
+
 
     # email configuration for error report
     # when an error aoocurs, an email is sent to the specified addr.

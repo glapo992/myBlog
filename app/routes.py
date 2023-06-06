@@ -98,9 +98,9 @@ def user (username):
     return render_template('user.html', user=user, posts=posts, title = user.username, form = form)
 
 
-@app.route('/user/current_user.username/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
+@app.route('/user/<username>/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
 @login_required  # view is protected by non-logged users
-def edit_profile():
+def edit_profile(username):
     """page to edit the profile info of the user, accessed only from the user's page after a login"""
     form = EditProfileForm(current_user.username)   # current_user.username is passed to the function of control purposes
     if form.is_submitted():
@@ -119,11 +119,12 @@ def edit_profile():
     # print('validation: ', (repr(form.validate_on_submit())))
     # print('errors: ', form.errors)
     # print('token: '+ str(form.csrf_token))
-    return render_template('edit_profile.html', form = form, title = 'edit profile')
+    return render_template('edit_profile.html', form = form, title = 'edit profile - {}'.format(current_user.username))
 
 @app.route('/follow/<username>', methods=['POST'])
 @login_required
 def follow(username):
+    """this function does't have a view but performs an action and returns another view"""
     form = EmptyForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(username = username).first()  #search on database the user with the given username
@@ -147,6 +148,7 @@ def follow(username):
 @app.route('/unfollow/<username>', methods=['POST'])
 @login_required
 def unfollow(username):
+    """this function does't have a view but performs an action and returns another view"""
     # same as follow, but unfollow() is used here
     form = EmptyForm()
     if form.validate_on_submit():
@@ -163,6 +165,9 @@ def unfollow(username):
         return redirect (url_for('user', username=username))
     else :
         return redirect (url_for('index'))
+
+# this is another methot to add a routing rule to a function, is the same than the decorator
+#app.add_url_rule('/edit_profile', 'edit_profile', edit_profile,  methods=['GET', 'POST'])
 
 #----------------------------------------------------------------------------------------
 
