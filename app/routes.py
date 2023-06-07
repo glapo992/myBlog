@@ -1,5 +1,5 @@
 from app import app, db # from app module import app obj (is a Flask obj)
-from flask import render_template, flash, redirect, url_for, request
+from flask import Response, render_template, flash, redirect, url_for, request
 from datetime import datetime
 
 
@@ -92,15 +92,12 @@ def registration():
 def user (username):
     user = Users.query.filter_by(username = username).first_or_404() # this method returns a 404 error if user is null
     
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
+    posts = Posts.query.filter_by(user_id = user.id)
     form = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
-    
+    form_del = EmptyForm()  # other form for delete posts
 
 
-    return render_template('user.html', user=user, posts=posts, title = user.username, form = form)
+    return render_template('user.html', user=user, posts=posts, form_del=form_del, title = user.username, form = form)
 
 
 @app.route('/user/<username>/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
@@ -121,9 +118,6 @@ def edit_profile(username):
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    # print('validation: ', (repr(form.validate_on_submit())))
-    # print('errors: ', form.errors)
-    # print('token: '+ str(form.csrf_token))
     return render_template('edit_profile.html', form = form, title = 'edit profile - {}'.format(current_user.username))
 
 @app.route('/follow/<username>', methods=['POST'])
@@ -188,8 +182,19 @@ def project():
         form.post.data = ""
 
     posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
-    form_del = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
-    return render_template('project.html',form = form, form_del =  form_del,title = "proj", posts = posts)
+    form_del = EmptyForm()  # other form for delete posts
+    return render_template('project.html', form = form, form_del =  form_del,title = "proj", posts = posts)
+
+
+@app.route('/')
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Posts.query.order_by(Posts.timestamp.desc()).all()
+    # return the template of proj page because is very similar, but without the form to insert posts. 
+    # must add a condition in the template to prevent a crash
+    return render_template('project.html', title = "home", posts = posts)
+
 
 
 @app.route('/delete_post/<del_post_id>' ,methods=['POST'])
@@ -203,4 +208,3 @@ def delete_post(del_post_id):
         db.session.commit()
         flash('post deleted succesfully')
     return redirect (url_for('project'))
-    

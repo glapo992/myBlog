@@ -14,8 +14,9 @@
     <!--links with the url for method - redirect to the function and not the page-->
     <div>
         <p>a fancy navbar: 
-        <a href="{{url_for('index')}}">home</a>
-        <a href="{{url_for('project')}}">proj</a>
+            <a href="{{url_for('index')}}">home</a>
+            <a href="{{url_for('explore')}}">explore</a>
+            <a href="{{url_for('project')}}">proj</a>
         {% if current_user.is_anonymous %}    
         <!-- current_user.is_anonymous is True when the user is not logged in-->
         <a href="{{url_for('login')}}">login</a>
