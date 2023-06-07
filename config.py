@@ -40,3 +40,8 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['your-email@example.com']  # list of reciving addresses
+
+
+    # Pagination configs
+    POST_PER_PAGE = 5 # definition of how many post per page is possible to see
+    POST_PER_PAGE_EXPLORE = 10 # definition of how many post per page is possible to see

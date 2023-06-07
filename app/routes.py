@@ -92,7 +92,7 @@ def registration():
 def user (username):
     user = Users.query.filter_by(username = username).first_or_404() # this method returns a 404 error if user is null
     
-    posts = Posts.query.filter_by(user_id = user.id)
+    posts = Posts.query.filter_by(user_id = user.id).order_by(Posts.timestamp.desc())
     form = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
     form_del = EmptyForm()  # other form for delete posts
 
@@ -180,20 +180,33 @@ def project():
         db.session.commit()
         flash('posted!')
         form.post.data = ""
-
-    posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
+    page = request.args.get('page', 1, type=int)
+    #posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
+    posts = current_user.followed_posts().paginate(page = page, per_page = app.config['POST_PER_PAGE'], error_out = False) # shows some posts per page ( see pagination )
+    # creation of url to send to the template to naviagate the pagination
+    next_url = url_for('explore', page = posts.next_num) # next_num is a Paginate() atribute
+    prev_url = url_for('explore', page = posts.prev_num) # prev_num is a Paginate() atribute
+    
     form_del = EmptyForm()  # other form for delete posts
-    return render_template('project.html', form = form, form_del =  form_del,title = "proj", posts = posts)
+    return render_template('project.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 @app.route('/')
 @app.route('/explore')
 @login_required
 def explore():
-    posts = Posts.query.order_by(Posts.timestamp.desc()).all()
+    # pagination handling
+    page = request.args.get('page', 1, type=int)
+
+    # posts = Posts.query.order_by(Posts.timestamp.desc()).all() # returns all results
+    posts = Posts.query.order_by(Posts.timestamp.desc()).paginate(page = page, per_page = app.config['POST_PER_PAGE_EXPLORE'], error_out = False)
+
+    # creation of url to send to the template to naviagate the pagination
+    next_url = url_for('explore', page = posts.next_num) # next_num is a Paginate() atribute
+    prev_url = url_for('explore', page = posts.prev_num) # prev_num is a Paginate() atribute
     # return the template of proj page because is very similar, but without the form to insert posts. 
     # must add a condition in the template to prevent a crash
-    return render_template('project.html', title = "home", posts = posts)
+    return render_template('project.html', title = "home", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 

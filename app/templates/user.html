@@ -26,16 +26,7 @@
     {% endif %}
 </div>
 {% for post in posts %}
-<div style="border-style:solid; border-width: 2px; padding: 5px;margin-bottom: 3px; ">
-    <p><img src="{{ user.avatar(64) }}" alt=""> {{ post.author.username }}</p>
-    <p>{{ post.body }}</p>
-    {% if current_user == post.author and form_del %}
-    <form action="{{url_for('delete_post', del_post_id = post.id)}}", method ='post'>
-        {{ form_del.hidden_tag() }}
-        {{ form_del.submit(value = 'Delete post') }}
-    </form>
-    {% endif %}
-</div>
+    {% include '_post.html' %}
 {% endfor %}
 
 {% endblock %}
