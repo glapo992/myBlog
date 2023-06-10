@@ -9,7 +9,8 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_password' # var used as key for cryptogtaphy and tokens, used by wtf 
     
     
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'+ os.path.join(basedir, 'app.db') # reading config. if no path to db, it creates one in the basedir
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'+ os.path.join(basedir, 'app.db') # reading config. if no path to db, it creates one in the basedir (db in the same folder of the application)
+    #SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost:5432/microblog" # line to connect to my postrgre sql (works!, but better move it in ENV vars)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # next 2 vars activates the development mode, which allows to access to a debugger from the brewser and auto reload the server when a chage in a file is detected, never use in production
