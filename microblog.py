@@ -7,9 +7,8 @@ from app import app, db
 #app.run(port=5001, debug=True)
 
 
-
 # shell context is used only to run command in the shell without import all every time
-from app.models import Users, Posts
+from app.models import Users, Posts, followers
 @app.shell_context_processor
 def make_shell_context():
-    return {'db':db, 'Users':Users, 'Posts':Posts} # the key of the dict is the alias of how the item is called in the shell
+    return {'db':db, 'Users':Users, 'Posts':Posts, 'followers':followers} # the key of the dict is the alias of how the item is called in the shell
