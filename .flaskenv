@@ -2,3 +2,11 @@ FLASK_APP=microblog.py
 SQLALCHEMY_DATABASE_URI=app.db
 FLASK_ENV=development
 FLASK_DEBUG=1
+<<<<<<< HEAD
+=======
+
+DB_USERNAME=''
+DB_PASSWORD=''
+DB_HOST=''
+DB_DB_NAME=''
+>>>>>>> 6c063910b9b1e93c48bfeb3f4f013c8a0f9ef1d7
