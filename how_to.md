@@ -3,6 +3,16 @@
 flask run -h localhost -p 3000
 ```
 
+# docker container: 
+- build: build the container from the Dockerfile without fancy option
+```
+docker build -t blog_docker .   
+```
+- to run it: create and run a contaier with the app reachable from localhost:5000. --rm option delete it after it closes
+```
+docker run -p 5000:5000 -d --name microblog --rm blog_docker
+```
+
 # custom decorator 
 example create a decorator that allows only some users to access a view
 

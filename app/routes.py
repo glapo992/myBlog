@@ -178,6 +178,7 @@ def unfollow(username):
 @app.route('/project',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
 def project():
+    """viev that shows only posts from user and followed profiles"""
     form = PostForm()
     if form.validate_on_submit():
         post = Posts(body= form.post.data, author = current_user)  
@@ -201,6 +202,7 @@ def project():
 @app.route('/explore')
 @login_required
 def explore():
+    """view shows all posts from all users """
     # pagination handling
     page = request.args.get('page', 1, type=int)
 
