@@ -59,6 +59,6 @@ class EmptyForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    """Form allows to add posts """
+    """Form allows to add posts"""
     post = TextAreaField('say something', validators=[DataRequired(), Length(min=1, max=140)])
     submit = SubmitField('Submit')

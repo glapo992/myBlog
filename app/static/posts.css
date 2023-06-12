@@ -1,0 +1,12 @@
+.post_template{
+    border-style:solid;
+    border-width: 1py;
+    border-color: lightgray;
+    padding: 5px;
+    margin-bottom: 3px;
+    border-radius: 15px;
+}
+
+td.post_body{
+    min-width: 10vw;
+}

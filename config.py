@@ -17,7 +17,7 @@ class Config(object):
         DB_NAME  = os.environ.get('DB_DB_NAME') 
 
         if USERNAME and PASSWORD and HOST and DB_NAME:
-            db_url = "postgresql://{}:{}@{}/{}".format(USERNAME,PASSWORD,HOST,DB_NAME)
+            db_url = f"postgresql://{USERNAME}:{PASSWORD}@{HOST}/{DB_NAME}"
         else:
             raise KeyError('Some necessary environment variable(s) are not defined')
         SQLALCHEMY_DATABASE_URI = db_url
