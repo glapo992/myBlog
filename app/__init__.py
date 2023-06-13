@@ -12,6 +12,9 @@ from flask_login import LoginManager # Login
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
+
+#email support
+from flask_mail import Mail
  
 
 #FLASK SETTINGS---------------------
@@ -39,6 +42,11 @@ except psycopg2.DatabaseError as exeption:
 login = LoginManager(app)
 login.login_view = 'login' # the assigned value 'login' is the function of the routes!! -> needed for login_required in the view functions
 #-----------------------------------
+
+# EMAIL SUPPORT CONFIGURATION ---------------------------
+mail = Mail(app) # use the same mail-server configured for the log erorr (see below)
+
+
 
 #LOG ERRORS TO A FILE------------------------------
 if not app.debug:  # only run in production
@@ -82,6 +90,10 @@ if not app.debug:
 
         app.logger.addHandler(mail_handler)   # here is defined how errors are handled in the app
 
+
+
+
+
 # To test this feature: STMP debug server from python(fake server that accepts mail)
 # to run the server run in another terminal the command: "python -m smtpd -n -c DebuggingServer localhost:8025"
 # than set the flask envs:
@@ -93,6 +105,10 @@ if not app.debug:
 
 #or 
 #use SendGrid, which allows you to send up to 100 emails per day on a free account. 
+
+
+
+
 
 #-------------------------------------------------------
 

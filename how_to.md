@@ -107,3 +107,7 @@ it takes 3 arguments:
 
 returns a Pagination object<br>
 can be configured in the config.py
+
+# EMAIL SUPPORT
+### password reset
+install packages flask-email and pyjwt for the mail and contents management
