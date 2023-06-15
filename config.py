@@ -8,9 +8,22 @@ class Config(object):
     #! REMOVE THE .flaskenv FILE FROM GIT BEFORE DEPLOY AND SET A REAL SECRET_KEY
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_password' # var used as key for cryptogtaphy and tokens, used by wtf 
     
-    #SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost:5432/microblog" # line to connect to my postrgre sql (works!, but better move it in ENV vars)
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'+ os.path.join(basedir, 'app.db') # reading config. if no path to db, it creates one in the basedir
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # tryes to reate a connection with postgres db reading from configs, if cant, uses the local db
+    # TODO: remove the local db in prod 
+    try:
+        PASSWORD = os.environ.get('DB_PASSWORD') 
+        USERNAME = os.environ.get('DB_USERNAME') 
+        HOST     = os.environ.get('DB_HOST') 
+        DB_NAME  = os.environ.get('DB_DB_NAME') 
+
+        if USERNAME and PASSWORD and HOST and DB_NAME:
+            db_url = f"postgresql://{USERNAME}:{PASSWORD}@{HOST}/{DB_NAME}"
+        else:
+            raise KeyError('Some necessary environment variable(s) are not defined')
+        SQLALCHEMY_DATABASE_URI = db_url
+    except:  
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///'+ os.path.join(basedir, 'app.db') # reading config. if no path to db, it creates one in the basedir
+        SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # next 2 vars activates the development mode, which allows to access to a debugger from the brewser and auto reload the server when a chage in a file is detected, never use in production
     FLASK_ENV=os.environ.get('FLASK_ENV')   # can be development or production
@@ -27,3 +40,8 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['your-email@example.com']  # list of reciving addresses
+
+
+    # Pagination configs
+    POST_PER_PAGE = 5 # definition of how many post per page is possible to see
+    POST_PER_PAGE_EXPLORE = 10 # definition of how many post per page is possible to see

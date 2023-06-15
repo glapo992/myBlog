@@ -56,3 +56,9 @@ class EditProfileForm(FlaskForm):
 class EmptyForm(FlaskForm):
     """allows to generate a form with only a button, so you can integrate it as a POST request and send data without make them appear in the url like a GET"""
     submit = SubmitField('Submit')
+
+
+class PostForm(FlaskForm):
+    """Form allows to add posts"""
+    post = TextAreaField('say something', validators=[DataRequired(), Length(min=1, max=140)])
+    submit = SubmitField('Submit')

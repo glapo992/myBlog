@@ -9,4 +9,5 @@ DB_USERNAME=''
 DB_PASSWORD=''
 DB_HOST=''
 DB_DB_NAME=''
->>>>>>> 6c063910b9b1e93c48bfeb3f4f013c8a0f9ef1d7
+=========
+>>>>>>>>> Temporary merge branch 2

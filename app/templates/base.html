@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/posts.css">
+    <link rel="stylesheet" href="../static/general.css">
     {% if title %}
         <title>{{ title }}</title>
     {% else %}
@@ -14,8 +16,9 @@
     <!--links with the url for method - redirect to the function and not the page-->
     <div>
         <p>a fancy navbar: 
-        <a href="{{url_for('index')}}">home</a>
-        <a href="{{url_for('project')}}">proj</a>
+            <a href="{{url_for('index')}}">home</a>
+            <a href="{{url_for('explore')}}">explore</a>
+            <a href="{{url_for('project')}}">proj</a>
         {% if current_user.is_anonymous %}    
         <!-- current_user.is_anonymous is True when the user is not logged in-->
         <a href="{{url_for('login')}}">login</a>

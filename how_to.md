@@ -97,3 +97,13 @@ def get_connection_string():
         raise KeyError('Some necessary environment variable(s) are not defined')
 
 ```
+
+# PAGINATION
+sqlalchemy provide a method paginate() where is possible to specify the number of results at time
+it takes 3 arguments: 
+    - page = page number
+    - per_page = item per page
+    - error_out = error flag  for out of range requests ( 404)
+
+returns a Pagination object<br>
+can be configured in the config.py

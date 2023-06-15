@@ -1,5 +1,5 @@
 from app import app, db # from app module import app obj (is a Flask obj)
-from flask import render_template, flash, redirect, url_for, request
+from flask import Response, render_template, flash, redirect, url_for, request
 from datetime import datetime
 
 
@@ -12,7 +12,9 @@ from werkzeug.urls import url_parse
 # follow/unfollow
 from app.forms import EmptyForm
 
-
+# form insertion
+from app.forms import PostForm
+from app.models import Posts
 
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
@@ -90,12 +92,17 @@ def registration():
 def user (username):
     user = Users.query.filter_by(username = username).first_or_404() # this method returns a 404 error if user is null
     
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
+    page = request.args.get('page', 1, type=int)
+    #posts = Posts.query.filter_by(user_id = user.id).order_by(Posts.timestamp.desc())
+    posts = user.posts.order_by(Posts.timestamp.desc()).paginate(page = page, per_page = app.config['POST_PER_PAGE'], error_out = False) # shows some posts per page ( see pagination )
+    next_url = url_for('user', username=user.username, page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
+    prev_url = url_for('user', username=user.username, page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
+
     form = EmptyForm()  # manage the follow/unfollow feature, must be passed as argument in the retun
-    return render_template('user.html', user=user, posts=posts, title = user.username, form = form)
+    form_del = EmptyForm()  # other form for delete posts
+
+
+    return render_template('user.html', user=user, posts=posts, form_del=form_del, title = user.username, form = form, next_url = next_url, prev_url= prev_url)
 
 
 @app.route('/user/<username>/edit_profile', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
@@ -116,9 +123,6 @@ def edit_profile(username):
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    # print('validation: ', (repr(form.validate_on_submit())))
-    # print('errors: ', form.errors)
-    # print('token: '+ str(form.csrf_token))
     return render_template('edit_profile.html', form = form, title = 'edit profile - {}'.format(current_user.username))
 
 @app.route('/follow/<username>', methods=['POST'])
@@ -171,17 +175,57 @@ def unfollow(username):
 
 #----------------------------------------------------------------------------------------
 
-@app.route('/project')
+@app.route('/project',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
 def project():
-    posts =  [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('project.html', title = "proj", posts = posts)
+    """viev that shows only posts from user and followed profiles"""
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Posts(body= form.post.data, author = current_user)  
+        db.session.add(post)
+        db.session.commit()
+        flash('posted!')
+        form.post.data = ""
+    # pagination handling
+    page = request.args.get('page', 1, type=int)
+    #posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
+    posts = current_user.followed_posts().paginate(page = page, per_page = app.config['POST_PER_PAGE'], error_out = False) # shows some posts per page ( see pagination )
+    # creation of url to send to the template to naviagate the pagination
+    next_url = url_for('project', page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
+    prev_url = url_for('project', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
+    
+    form_del = EmptyForm()  # other form for delete posts
+    return render_template('project.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
+
+
+@app.route('/')
+@app.route('/explore')
+@login_required
+def explore():
+    """view shows all posts from all users """
+    # pagination handling
+    page = request.args.get('page', 1, type=int)
+
+    # posts = Posts.query.order_by(Posts.timestamp.desc()).all() # returns all results
+    posts = Posts.query.order_by(Posts.timestamp.desc()).paginate(page = page, per_page = app.config['POST_PER_PAGE_EXPLORE'], error_out = False)
+
+    # creation of url to send to the template to naviagate the pagination
+    next_url = url_for('explore', page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
+    prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
+    # return the template of proj page because is very similar, but without the form to insert posts. 
+    # must add a condition in the template to prevent a crash
+    return render_template('project.html', title = "home", posts = posts, next_url = next_url, prev_url= prev_url)
+
+
+
+@app.route('/delete_post/<del_post_id>' ,methods=['POST'])
+@login_required
+def delete_post(del_post_id):
+    """ function to delete a record from the database"""
+    form = EmptyForm()
+    if form.validate_on_submit():
+        del_post = Posts.query.filter_by(id = del_post_id).first()
+        db.session.delete(del_post)
+        db.session.commit()
+        flash('post deleted succesfully')
+    return redirect (url_for('project'))
