@@ -10,6 +10,10 @@ from app import login
 from werkzeug.security import generate_password_hash, check_password_hash
 from hashlib import md5 # optional, just for Gravatar service for avatar images
 
+# token generation for pw reset request
+import jwt 
+from time import time
+from app import app # needed to read config file ad access the secret_key
 
 
 """ after a modificaion in the models, the migrate class will generate a script with the database version. 
@@ -101,6 +105,31 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         # all posts are combined and ordered with union statement
         return followed.union(own).order_by(Posts.timestamp.desc())
 
+    def get_reset_password_token(self, exp_time = 900):
+        """creates a token for authenticate of email link 
+
+        :param exp_time: validity of the token in seconds, defaults to 900
+        :type exp_time: int, optional
+        :return: token
+        :rtype: jwt token
+        """	    
+        token = jwt.encode(payload={'reset_password': self.id, 'exp': time() + exp_time}, key=app.config['SECRET_KEY'], algorithm='HS256')
+        return token
+    
+    @staticmethod # staticmethods can be invoked directly from the class. do not recive the class as firts argument
+    def verify_reset_password_token(token):
+        """verifies the authenticity of the token itself
+
+        :param token: the token to verify
+        :type token: jwt token
+        :return: id of the users
+        :rtype: id
+        """
+        try:   # if token is expired an exception is raised
+            id = jwt.decode(token=token, key=app.config['SECRET_KEY'], algorithms=['HS256'])
+        except:
+            return
+        return Users.query.get(id)
 
     # avatar pic--------------------
     def avatar(self, size:int)->str:

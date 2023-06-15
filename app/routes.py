@@ -16,6 +16,10 @@ from app.forms import EmptyForm
 from app.forms import PostForm
 from app.models import Posts
 
+# password reset via mail 
+from app.forms import ResetPasswordRequestForm
+from app.email import send_password_reset_email, send_email
+
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
 @app.before_request 
@@ -37,11 +41,12 @@ def index():
 # -----------------------AUTENTICATION VIEWS----------------------------
 @app.route('/login', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
 def login():
-    """ the login library has required items that can be used 
+    """ this view manage the login function 
+    the login library has required items that can be used 
     - is_authenticated: a property that is True if the user has valid credentials or False otherwise.
     - is_active: a property that is True if the user's account is active or False otherwise.
     - is_anonymous: a property that is False for regular users, and True for a special, anonymous user.
-    - get_id(): a method that returns a unique identifier for the user as a string (unicode, if using Python
+    - get_id(): a method that returns a unique identifier for the user as a string (unicode, if using Python)
     """
     if current_user.is_authenticated:
         return redirect (url_for('index'))                      #  if the user is already auth, just return the index
@@ -72,6 +77,7 @@ def logout():
 
 @app.route('/registration', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
 def registration():
+    """ new user registration view """
     if current_user.is_authenticated:
         return redirect (url_for('index'))    
     form = RegistrationForm()
@@ -83,6 +89,22 @@ def registration():
         flash('registration ok')
         return redirect(url_for('login'))
     return render_template('registration.html', form = form , title= 'Registration')   
+
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    """this method allows to send an email with the reset password request"""
+    if current_user.is_authenticated: # check if the user is already logged, in case of error
+        return redirect (url_for('index'))
+    
+    form = ResetPasswordRequestForm() 
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email = form.email.data).first() # search for the user with the given email
+        if user:
+            send_email(user)
+            flash("check your inbox")
+            return redirect (url_for('login'))
+    return render_template('reset_passwd_req.html', title = 'reset password', form = form)
 
 #----------------------------------------------------------------------------------------
 
@@ -170,7 +192,7 @@ def unfollow(username):
     else :
         return redirect (url_for('index'))
 
-# this is another methot to add a routing rule to a function, is the same than the decorator
+# this is another methot to add a routing rule to a function, is the same than the decorator:
 #app.add_url_rule('/edit_profile', 'edit_profile', edit_profile,  methods=['GET', 'POST'])
 
 #----------------------------------------------------------------------------------------
@@ -178,7 +200,7 @@ def unfollow(username):
 @app.route('/project',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
 def project():
-    """viev that shows only posts from user and followed profiles"""
+    """view that shows only posts from user and followed profiles"""
     form = PostForm()
     if form.validate_on_submit():
         post = Posts(body= form.post.data, author = current_user)  
