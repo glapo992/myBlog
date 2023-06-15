@@ -18,7 +18,7 @@ from app.models import Posts
 
 # password reset via mail 
 from app.forms import ResetPasswordRequestForm
-from app.email import send_mail
+from app.email import send_password_reset_email, send_email
 
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
@@ -77,6 +77,7 @@ def logout():
 
 @app.route('/registration', methods=['GET', 'POST']) # this method accepts also post requests, as specified in the html from 
 def registration():
+    """ new user registration view """
     if current_user.is_authenticated:
         return redirect (url_for('index'))    
     form = RegistrationForm()
@@ -93,14 +94,14 @@ def registration():
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     """this method allows to send an email with the reset password request"""
-    if current_user.is_autenticated: # check if the user is already logged, in case of error
+    if current_user.is_authenticated: # check if the user is already logged, in case of error
         return redirect (url_for('index'))
     
     form = ResetPasswordRequestForm() 
     if form.validate_on_submit():
         user = Users.query.filter_by(email = form.email.data).first() # search for the user with the given email
         if user:
-            send_mail(user)
+            send_email(user)
             flash("check your inbox")
             return redirect (url_for('login'))
     return render_template('reset_passwd_req.html', title = 'reset password', form = form)

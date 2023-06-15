@@ -109,5 +109,18 @@ returns a Pagination object<br>
 can be configured in the config.py
 
 # EMAIL SUPPORT
-### password reset
+## password reset
 install packages flask-email and pyjwt for the mail and contents management
+### use of tokens 
+a single use link is sent to the email address, to be sure the link is valid are used tokens <br>
+**JSON web tokens** (JWT) are most used for this 
+run --> pip install pyjwt
+```
+import jwt
+# token creation 
+token = jwt.encode( value to send eg a dict, 'my-secret', algorithm='HS256')
+
+# read token
+jwt.decode(token, 'my-secret', algorithms=['HS256'])
+```
+does not created an encrypted token, but a signed payload(not modificable payload)
