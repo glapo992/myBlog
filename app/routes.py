@@ -17,8 +17,9 @@ from app.forms import PostForm
 from app.models import Posts
 
 # password reset via mail 
-from app.forms import ResetPasswordRequestForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm 
 from app.email import send_password_reset_email, send_email
+
 
 #------NOT A VIEW-----------
 # the decorated function is executed right before ANY view function in the application.
@@ -104,7 +105,28 @@ def reset_password_request():
             send_email(user)
             flash("check your inbox")
             return redirect (url_for('login'))
-    return render_template('reset_passwd_req.html', title = 'reset password', form = form)
+    return render_template('email_templates/reset_passwd_req.html', title = 'reset password', form = form)
+
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """display the reset password form and allows to change password
+
+    :param token: the token sent via email
+    :type: jwt token
+    """
+    if current_user.is_authenticated: # check if the user is already logged, in case of error
+        return redirect (url_for('index'))
+    user = Users.verify_reset_password_token(token=token) # istance of the correct user 
+    if not user:
+        return redirect (url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash("password changed")
+        return redirect (url_for('login'))
+    return render_template ('reset_password.html', form = form)
 
 #----------------------------------------------------------------------------------------
 
@@ -112,6 +134,11 @@ def reset_password_request():
 @app.route('/user/<username>')
 @login_required    # view is protected by non-logged users
 def user (username):
+    """user main page, where all his post are shown
+
+    :param username: the username of the user
+    :type username: str
+    """
     user = Users.query.filter_by(username = username).first_or_404() # this method returns a 404 error if user is null
     
     page = request.args.get('page', 1, type=int)
@@ -131,6 +158,7 @@ def user (username):
 @login_required  # view is protected by non-logged users
 def edit_profile(username):
     """page to edit the profile info of the user, accessed only from the user's page after a login"""
+    
     form = EditProfileForm(current_user.username)   # current_user.username is passed to the function of control purposes
     if form.is_submitted():
         print ("submitted")
@@ -174,7 +202,7 @@ def follow(username):
 @app.route('/unfollow/<username>', methods=['POST'])
 @login_required
 def unfollow(username):
-    """this function does't have a view but performs an action and returns another view"""
+    """this function doesnt tertun a template, performs an action and returns another view"""
     # same as follow, but unfollow() is used here
     form = EmptyForm()
     if form.validate_on_submit():
@@ -200,7 +228,7 @@ def unfollow(username):
 @app.route('/project',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
 def project():
-    """view that shows only posts from user and followed profiles"""
+    """view that shows only posts from user and followed profiles and allows the user to write new posts"""
     form = PostForm()
     if form.validate_on_submit():
         post = Posts(body= form.post.data, author = current_user)  

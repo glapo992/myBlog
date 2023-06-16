@@ -32,14 +32,15 @@ class Config(object):
 
 
     # email configuration for error report
-    # when an error aoocurs, an email is sent to the specified addr.
+    # when an error occurs, an email is sent to the specified addr.
+    # config also valid for reset password requests
     # for the moment is not fully configured, but values can be added to the .flaskenv file
-    MAIL_SERVER = os.environ.get('MAIL_SERVER')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    MAIL_SERVER   = os.environ.get('MAIL_SERVER')
+    MAIL_PORT     = int(os.environ.get('MAIL_PORT') or 25)
+    MAIL_USE_TLS  = os.environ.get('MAIL_USE_TLS') is not None
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    ADMINS = ['your-email@example.com']  # list of reciving addresses
+    ADMINS        = ['your-email@example.com']  # list of reciving addresses
 
 
     # Pagination configs

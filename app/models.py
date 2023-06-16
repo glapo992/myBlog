@@ -118,12 +118,12 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
     
     @staticmethod # staticmethods can be invoked directly from the class. do not recive the class as firts argument
     def verify_reset_password_token(token):
-        """verifies the authenticity of the token itself
+        """verifies the authenticity of the token itself and returns the user with the ID stored in the token
 
         :param token: the token to verify
         :type token: jwt token
-        :return: id of the users
-        :rtype: id
+        :return: Users with the token ID
+        :rtype: Users
         """
         try:   # if token is expired an exception is raised
             id = jwt.decode(token=token, key=app.config['SECRET_KEY'], algorithms=['HS256'])

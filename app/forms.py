@@ -10,7 +10,6 @@ class LoginForm(FlaskForm):
     submit      = SubmitField  ('sign in')
 
 class RegistrationForm(FlaskForm):
-
     username  = StringField  ('Username',         validators=[DataRequired(), Length(min=0, max=64)])
     email     = EmailField   ('email',            validators=[DataRequired(), Email(), Length(min=0, max=64)])
     password  = PasswordField('Password',         validators=[DataRequired()])
@@ -57,14 +56,18 @@ class EmptyForm(FlaskForm):
     """allows to generate a form with only a button, so you can integrate it as a POST request and send data without make them appear in the url like a GET"""
     submit = SubmitField('Submit')
 
-
 class PostForm(FlaskForm):
     """Form allows to add posts"""
-    post = TextAreaField('say something', validators=[DataRequired(), Length(min=1, max=140)])
+    post   = TextAreaField('say something', validators=[DataRequired(), Length(min=1, max=140)])
     submit = SubmitField('Submit')
 
-
 class ResetPasswordRequestForm(FlaskForm):
-     """form for reset password """
-     email = EmailField('email', validators=[DataRequired(), Email(), Length(min=0, max=64)])
+     """form that send a reset password request -> wll be sent via email """
+     email  = EmailField('email', validators=[DataRequired(), Email(), Length(min=0, max=64)])
      submit = SubmitField('Request Password restet')
+
+class ResetPasswordForm(FlaskForm):
+    """form to actually reset the password"""
+    password  = PasswordField('New Password',     validators=[DataRequired()])
+    password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit    = SubmitField  ('change password')
