@@ -1,20 +1,17 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
+
+
+{% block app_content %}
 <!-- current_user.username is the username of the current logged user -->
 <h1> the secret project only {{ current_user.username }} can see</h1>
 {% if form %}
-<form action="", method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.post.label }} <br>
-        {{ form.post(cols = 32, rows = 4) }} <br>
-        {% for error in form.post.errors %} <br>
-        <span style= "color : red"> {{ error }}</span>
-        {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p> 
-</form>
+<div class="row">
+    <div class="col-md-4">
+        {{ wtf.quick_form(form)}}
+    </div>
+</div>
 {% endif %}
 <!-----------sub template to show posts---------->
 {% for post in posts %}
@@ -29,4 +26,5 @@
 <a href="{{ next_url }}">Older posts</a>
 {% endif %}
 
-{% endblock content %}
+{% endblock %}
+

@@ -264,7 +264,7 @@ def explore():
     prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     # return the template of proj page because is very similar, but without the form to insert posts. 
     # must add a condition in the template to prevent a crash
-    return render_template('project.html', title = "home", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('project.html', title = "Explore", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 
