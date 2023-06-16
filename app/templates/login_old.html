@@ -1,0 +1,33 @@
+<!--this page is the old version of the login form before introduction of bootstrap-flask and auto rendering of forms
+I' keep it here as exemple of a normal form -->
+
+
+{% extends 'base.html' %}
+{% block app_content %}
+    <h1>sign in</h1>
+    <form action="", method="post" novalidate> <!--action is the url where the post result are sent, if blank is the current page, novalidate bypass the browser valdation and allows the app to do it (just for this exemple)-->
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }} <br>
+            {{ form.username(size = 32) }} 
+            {% for error in form.username.errors %}
+            <span style= "color : red"> {{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }} <br>
+            {{ form.password(size = 32) }} 
+            {% for error in form.password.errors %}
+                <span style= "color : red"> {{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.remember_me.label }} {{ form.remember_me() }} 
+            {{ form.submit() }} 
+        </p>
+    </form>
+    <p>
+        forgot password? 
+        <a href="{{url_for('reset_password_request')}}">click here to reset password</a>
+    </p>
+{% endblock %}

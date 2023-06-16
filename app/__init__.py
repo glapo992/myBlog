@@ -15,6 +15,9 @@ import os
 
 #email support
 from flask_mail import Mail
+
+#bootstrap
+from flask_bootstrap import Bootstrap
  
 
 #FLASK SETTINGS---------------------
@@ -24,6 +27,11 @@ try:
 except:
     raise Exception('impossible to read the configuration')
 #-----------------------------------
+
+#BOOTSTRAP------------------------------
+#init of bootsrap object, creates a new html base page called bootstrap/base.html, the actual base.html must be adapted to extend bootstrap version
+bootstrap = Bootstrap(app=app) 
+
 
 
 # DATABASE--------------------------
@@ -46,8 +54,6 @@ login.login_view = 'login' # the assigned value 'login' is the function of the r
 # EMAIL SUPPORT CONFIGURATION ---------------------------
 mail = Mail(app) # use the same mail-server configured for the log erorr (see below)
 
-
-
 #LOG ERRORS TO A FILE------------------------------
 if not app.debug:  # only run in production
     try:
@@ -69,7 +75,6 @@ if not app.debug:  # only run in production
 
 #-------------------------------------------------------
 
-
 #LOG ERRORS TO EMAIL------------------------------
 if not app.debug:
     if app.config['MAIL_SERVER']:    # if not set, the whole service is dectivated
@@ -89,6 +94,7 @@ if not app.debug:
         mail_handler.setLevel(logging.ERROR)  # set the logs level that are sent
 
         app.logger.addHandler(mail_handler)   # here is defined how errors are handled in the app
+
 
 
 
