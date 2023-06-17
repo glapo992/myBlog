@@ -2,13 +2,18 @@
 
 <!--with the botstrap extension the tag title is no more required-->
 {% block title %}
-    {% if title %}
-       {{ title }}
-    {% else %}
-       welcome to the page
-    {% endif %}
+{% if title %}
+{{ title }}
+{% else %}
+welcome to the page
+{% endif %}
 {% endblock title %}
 
+<!--include moment.js, the lib for timezone rendering. super() allows to preserv content from base template-->
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock scripts %}
 
 
 {% block navbar %}

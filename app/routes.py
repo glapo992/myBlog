@@ -244,7 +244,7 @@ def feed():
     prev_url = url_for('feed', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     
     form_del = EmptyForm()  # other form for delete posts
-    return render_template('feed.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', form = form, form_del = form_del, title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 @app.route('/')
@@ -270,7 +270,7 @@ def explore():
 @app.route('/delete_post/<del_post_id>' ,methods=['POST'])
 @login_required
 def delete_post(del_post_id):
-    """ function to delete a post from the database"""
+    """ function to delete a post/Users/giuliolapovich/libri/progit.pdf from the database"""
     form = EmptyForm()
     if form.validate_on_submit():
         del_post = Posts.query.filter_by(id = del_post_id).first()

@@ -18,6 +18,9 @@ from flask_mail import Mail
 
 #bootstrap
 from flask_bootstrap import Bootstrap
+
+# Timezone 
+from flask_moment import Moment
  
 
 #FLASK SETTINGS---------------------
@@ -41,6 +44,10 @@ try:
 except psycopg2.DatabaseError as exeption:
     print ('database connection error')
     raise exeption 
+#-----------------------------------
+
+#Timezone---------------------------
+moment = Moment(app) # wrapper of moment.js, all template must include js library (just add in base.html)
 #-----------------------------------
 
 
