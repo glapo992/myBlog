@@ -23,6 +23,7 @@
     </form>
     {% endif %}
     <h2><img src="{{ user.avatar(128) }}" alt="propic">  {{ user.username }}</h2>
+    <p>{{ user.email }}</p>
 
     {% if user.about_me %}
     <p>{{ user.about_me }}</p>

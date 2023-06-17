@@ -126,8 +126,10 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         :rtype: Users
         """
         try:   # if token is expired an exception is raised
-            id = jwt.decode(token=token, key=app.config['SECRET_KEY'], algorithms=['HS256'])
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+            print(id)
         except:
+            print('in the except')
             return
         return Users.query.get(id)
 
@@ -155,9 +157,6 @@ class Posts(db.Model):
     def __repr__(self):
         return '<Post: {}>'.format(self.body)
     
-
-
-
 
 @login.user_loader
 def load_user(id):

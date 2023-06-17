@@ -59,7 +59,7 @@ def login():
             flash('invalid username or pw')                     # must be handled in html. did in base.html so all pages can handle flash messages
             return redirect(url_for('login'))                   # redirect with the url_for method
         login_user(user=user, remember=form.remember_me.data)   #flask function register the user as logged in. sets a variable current_user with the logged one for the duration of the session
-        next_page = request.args.get('next')                    # the argument of the request -> is the url to the page the user want to visit, caught by @login_required (.../login?next=%2Fproject)
+        next_page = request.args.get('next')                    # the argument of the request -> is the url to the page the user want to visit, caught by @login_required (.../login?next=%2Ffeed)
         
         if not next_page or url_parse(next_page).netloc != "":  
             # ensure that the next is on the same site 
@@ -102,10 +102,10 @@ def reset_password_request():
     if form.validate_on_submit():
         user = Users.query.filter_by(email = form.email.data).first() # search for the user with the given email
         if user:
-            send_email(user)
+            send_password_reset_email(user)
             flash("check your inbox")
             return redirect (url_for('login'))
-    return render_template('email_templates/reset_passwd_req.html', title = 'reset password', form = form)
+    return render_template('reset_passwd_req.html', title = 'reset password', form = form)
 
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -116,9 +116,11 @@ def reset_password(token):
     :type: jwt token
     """
     if current_user.is_authenticated: # check if the user is already logged, in case of error
+        print('Debug:user auth')
         return redirect (url_for('index'))
     user = Users.verify_reset_password_token(token=token) # istance of the correct user 
     if not user:
+        print('Debug:user not found')
         return redirect (url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -222,9 +224,9 @@ def unfollow(username):
 
 #----------------------------------------------------------------------------------------
 
-@app.route('/project',methods = ['GET', 'POST'])
+@app.route('/feed',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
-def project():
+def feed():
     """view that shows only posts from user and followed profiles and allows the user to write new posts"""
     form = PostForm()
     if form.validate_on_submit():
@@ -238,11 +240,11 @@ def project():
     #posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
     posts = current_user.followed_posts().paginate(page = page, per_page = app.config['POST_PER_PAGE'], error_out = False) # shows some posts per page ( see pagination )
     # creation of url to send to the template to naviagate the pagination
-    next_url = url_for('project', page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
-    prev_url = url_for('project', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
+    next_url = url_for('feed', page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
+    prev_url = url_for('feed', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     
     form_del = EmptyForm()  # other form for delete posts
-    return render_template('project.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 @app.route('/')
@@ -261,7 +263,7 @@ def explore():
     prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     # return the template of proj page because is very similar, but without the form to insert posts. 
     # must add a condition in the template to prevent a crash
-    return render_template('project.html', title = "Explore", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', title = "Explore", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 
@@ -275,4 +277,4 @@ def delete_post(del_post_id):
         db.session.delete(del_post)
         db.session.commit()
         flash('post deleted succesfully')
-    return redirect (url_for('project'))
+    return redirect (url_for('feed'))
