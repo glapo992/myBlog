@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
 {% block app_content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ user.username }}</li>
+    </ol>
+  </nav>
 <div>
     {% if user == current_user %}
     <p><a href="{{ url_for('edit_profile', username = current_user.username) }}">Edit your profile</a></p>

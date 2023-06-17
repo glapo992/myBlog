@@ -159,11 +159,8 @@ def user (username):
 def edit_profile(username):
     """page to edit the profile info of the user, accessed only from the user's page after a login"""
     
-    form = EditProfileForm(current_user.username)   # current_user.username is passed to the function of control purposes
-    if form.is_submitted():
-        print ("submitted")
-    if form.validate():
-        print ("valid")
+    form = EditProfileForm(current_user.username)   # current_user.username is passed to the function for control purposes
+    
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data

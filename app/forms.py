@@ -30,9 +30,9 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('email already used')
         
 class EditProfileForm(FlaskForm):
-    """from alows user to edit his personal profile info"""
+    """form allows user to edit his personal profile info"""
     
-    username  = StringField  ('Username', validators=[DataRequired(),Length(min=0, max=64)]) 
+    username  = StringField  ('Username', validators=[DataRequired()]) 
     about_me  = TextAreaField('About me', validators=[Length(min=0, max=150)])
     submit    = SubmitField  ('Edit')
 
@@ -41,7 +41,7 @@ class EditProfileForm(FlaskForm):
         self.original_username = original_username  # creates a new var with the orignal name of the user
 
     def validate_username(self, username):
-        """custom validator, chechk if the username chosen is already in use and raises an error
+        """custom validator, check if the username chosen is already in use and raises an error
 
         :param username: new chosen username
         :type username: str

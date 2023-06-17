@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-
-
 {% block app_content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{request.endpoint}}</li>
+    </ol>
+</nav>
 <!-- current_user.username is the username of the current logged user -->
 <h1> the secret project only {{ current_user.username }} can see</h1>
 {% if form %}
