@@ -270,11 +270,11 @@ def explore():
 @app.route('/delete_post/<del_post_id>' ,methods=['POST'])
 @login_required
 def delete_post(del_post_id):
-    """ function to delete a record from the database"""
+    """ function to delete a post from the database"""
     form = EmptyForm()
     if form.validate_on_submit():
         del_post = Posts.query.filter_by(id = del_post_id).first()
         db.session.delete(del_post)
         db.session.commit()
         flash('post deleted succesfully')
-    return redirect (url_for('feed'))
+    return redirect (url_for({{request.endpoint}}))

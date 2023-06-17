@@ -5,7 +5,6 @@ FLASK_DEBUG=0
 
 SECRET_KEY=supersecretpassword
 
-SECRET_KEY=supersecretpassword
 
 DB_USERNAME=''
 DB_PASSWORD=''
