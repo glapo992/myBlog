@@ -114,6 +114,7 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         :rtype: jwt token
         """	    
         token = jwt.encode(payload={'reset_password': self.id, 'exp': time() + exp_time}, key=app.config['SECRET_KEY'], algorithm='HS256')
+        print('sent key:', app.config['SECRET_KEY'])
         return token
     
     @staticmethod # staticmethods can be invoked directly from the class. do not recive the class as firts argument
@@ -126,8 +127,13 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         :rtype: Users
         """
         try:   # if token is expired an exception is raised
-            id = jwt.decode(token=token, key=app.config['SECRET_KEY'], algorithms=['HS256'])
+            print('recived key:', app.config['SECRET_KEY'])
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+            #jwt.decode(token,'secret', algorithms=['HS256'])
+
+            print(id)
         except:
+            print('in the except')
             return
         return Users.query.get(id)
 

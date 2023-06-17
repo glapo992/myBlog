@@ -103,6 +103,11 @@ if not app.debug:
 # To test this feature: STMP debug server from python(fake server that accepts mail)
 # to run the server run in another terminal the command: "python -m smtpd -n -c DebuggingServer localhost:8025"
 # than set the flask envs:
+#export MAIL_SERVER=localhost
+#export MAIL_PORT=8025
+
+
+# otherwise is possible to set a real email server and configure envs like this 
 #export MAIL_SERVER=smtp.googlemail.com
 #export MAIL_PORT=587
 #export MAIL_USE_TLS=1

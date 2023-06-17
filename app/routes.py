@@ -102,10 +102,10 @@ def reset_password_request():
     if form.validate_on_submit():
         user = Users.query.filter_by(email = form.email.data).first() # search for the user with the given email
         if user:
-            send_email(user)
+            send_password_reset_email(user)
             flash("check your inbox")
             return redirect (url_for('login'))
-    return render_template('email_templates/reset_passwd_req.html', title = 'reset password', form = form)
+    return render_template('reset_passwd_req.html', title = 'reset password', form = form)
 
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -116,9 +116,11 @@ def reset_password(token):
     :type: jwt token
     """
     if current_user.is_authenticated: # check if the user is already logged, in case of error
+        print('Debug:user auth')
         return redirect (url_for('index'))
     user = Users.verify_reset_password_token(token=token) # istance of the correct user 
     if not user:
+        print('Debug:user not found')
         return redirect (url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
