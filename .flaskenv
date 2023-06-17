@@ -1,7 +1,9 @@
 FLASK_APP=microblog.py
 SQLALCHEMY_DATABASE_URI=app.db
 FLASK_ENV=production
-FLASK_DEBUG=1
+FLASK_DEBUG=0
+
+SECRET_KEY=supersecretpassword
 
 SECRET_KEY=supersecretpassword
 

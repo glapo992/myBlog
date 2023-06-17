@@ -59,7 +59,7 @@ def login():
             flash('invalid username or pw')                     # must be handled in html. did in base.html so all pages can handle flash messages
             return redirect(url_for('login'))                   # redirect with the url_for method
         login_user(user=user, remember=form.remember_me.data)   #flask function register the user as logged in. sets a variable current_user with the logged one for the duration of the session
-        next_page = request.args.get('next')                    # the argument of the request -> is the url to the page the user want to visit, caught by @login_required (.../login?next=%2Fproject)
+        next_page = request.args.get('next')                    # the argument of the request -> is the url to the page the user want to visit, caught by @login_required (.../login?next=%2Ffeed)
         
         if not next_page or url_parse(next_page).netloc != "":  
             # ensure that the next is on the same site 
@@ -224,9 +224,9 @@ def unfollow(username):
 
 #----------------------------------------------------------------------------------------
 
-@app.route('/project',methods = ['GET', 'POST'])
+@app.route('/feed',methods = ['GET', 'POST'])
 @login_required   # view is protected by non-logged users
-def project():
+def feed():
     """view that shows only posts from user and followed profiles and allows the user to write new posts"""
     form = PostForm()
     if form.validate_on_submit():
@@ -240,11 +240,11 @@ def project():
     #posts = current_user.followed_posts().all()   # function that shows all post from followed people and from user
     posts = current_user.followed_posts().paginate(page = page, per_page = app.config['POST_PER_PAGE'], error_out = False) # shows some posts per page ( see pagination )
     # creation of url to send to the template to naviagate the pagination
-    next_url = url_for('project', page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
-    prev_url = url_for('project', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
+    next_url = url_for('feed', page = posts.next_num) if posts.has_next else None # next_num is a Paginate() atribute
+    prev_url = url_for('feed', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     
     form_del = EmptyForm()  # other form for delete posts
-    return render_template('project.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', form = form, form_del =  form_del,title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 @app.route('/')
@@ -263,7 +263,7 @@ def explore():
     prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     # return the template of proj page because is very similar, but without the form to insert posts. 
     # must add a condition in the template to prevent a crash
-    return render_template('project.html', title = "Explore", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', title = "Explore", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 
@@ -277,4 +277,4 @@ def delete_post(del_post_id):
         db.session.delete(del_post)
         db.session.commit()
         flash('post deleted succesfully')
-    return redirect (url_for('project'))
+    return redirect (url_for('feed'))
