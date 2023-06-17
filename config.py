@@ -46,3 +46,7 @@ class Config(object):
     # Pagination configs
     POST_PER_PAGE = 5 # definition of how many post per page is possible to see
     POST_PER_PAGE_EXPLORE = 10 # definition of how many post per page is possible to see
+
+    # language support
+    # list of supported languages codes for Babel extension
+    LANGUAGES = ['en','it']

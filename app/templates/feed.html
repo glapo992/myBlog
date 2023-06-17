@@ -10,7 +10,7 @@
     </ol>
 </nav>
 <!-- current_user.username is the username of the current logged user -->
-<h1> the secret project only {{ current_user.username }} can see</h1>
+<h1> {{_('the secret project only')}} {{ current_user.username }} {{_('can see')}}</h1>
 {% if form %}
 <div class="row">
     <div class="col-md-4">

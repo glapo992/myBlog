@@ -21,6 +21,10 @@ from flask_bootstrap import Bootstrap
 
 # Timezone 
 from flask_moment import Moment
+
+#language supp
+from flask_babel import Babel, _, lazy_gettext as _l
+from flask import request
  
 
 #FLASK SETTINGS---------------------
@@ -50,6 +54,23 @@ except psycopg2.DatabaseError as exeption:
 moment = Moment(app) # wrapper of moment.js, all template must include js library (just add in base.html)
 #-----------------------------------
 
+#LANGUAGE SUPPORT--------------------
+babel = Babel(app)
+# babel provides a decorator. decorated func is invoked for each reqest to select language for that req
+@babel.localeselector
+def get_locale():
+    """request attr accept_languages works with request header that client send, and specify lang. 
+    best_match() compares the preferred langs in the request with the supported ones on the app. 
+    langs in the request have a weight defined by os of the client
+    """
+    #return 'en' #forces to display the given lang
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+# this login section is here because I need to override the default message in order to use babel on it 
+login = LoginManager(app)
+login.login_view = 'login'
+login.login_message = _l('Please, log in to access this page')
+#-----------------------------------
 
 #LOGIN------------------------------
 login = LoginManager(app)
@@ -99,8 +120,6 @@ if not app.debug:
         mail_handler.setLevel(logging.ERROR)  # set the logs level that are sent
 
         app.logger.addHandler(mail_handler)   # here is defined how errors are handled in the app
-
-
 
 
 

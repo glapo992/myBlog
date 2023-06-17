@@ -18,7 +18,12 @@ from app.models import Posts
 
 # password reset via mail 
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm 
-from app.email import send_password_reset_email, send_email
+from app.email import send_password_reset_email
+
+#language support
+# import the function _() that acts like a wrapper arpund the text to translate, lazy_gettext() does the same but waits an http request before transalte the text
+from flask_babel import _, lazy_gettext as l_
+
 
 
 #------NOT A VIEW-----------
@@ -56,7 +61,7 @@ def login():
     if form.validate_on_submit():                               # procss the form, returns true or false depending on the validators. if false require an error handler
         user = Users.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('invalid username or pw')                     # must be handled in html. did in base.html so all pages can handle flash messages
+            flash(_('invalid username or pw'))                     # must be handled in html. did in base.html so all pages can handle flash messages
             return redirect(url_for('login'))                   # redirect with the url_for method
         login_user(user=user, remember=form.remember_me.data)   #flask function register the user as logged in. sets a variable current_user with the logged one for the duration of the session
         next_page = request.args.get('next')                    # the argument of the request -> is the url to the page the user want to visit, caught by @login_required (.../login?next=%2Ffeed)
@@ -68,7 +73,7 @@ def login():
             next_page = (url_for('index'))  # if next page does not exist, the url for index is assigned
         return redirect (next_page)
 
-    return render_template ('login.html', form = form, title = 'Sign In')
+    return render_template ('login.html', form = form, title = _('Sign In'))
 
 @app.route('/logout')
 def logout():
@@ -87,9 +92,9 @@ def registration():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('registration ok')
+        flash(_('registration ok'))
         return redirect(url_for('login'))
-    return render_template('registration.html', form = form , title= 'Registration')   
+    return render_template('registration.html', form = form , title= _('Registration'))   
 
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
@@ -103,7 +108,7 @@ def reset_password_request():
         user = Users.query.filter_by(email = form.email.data).first() # search for the user with the given email
         if user:
             send_password_reset_email(user)
-            flash("check your inbox")
+            flash (_("check your inbox"))
             return redirect (url_for('login'))
     return render_template('reset_passwd_req.html', title = 'reset password', form = form)
 
@@ -126,7 +131,7 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash("password changed")
+        flash(_("password changed"))
         return redirect (url_for('login'))
     return render_template ('reset_password.html', form = form)
 
@@ -167,12 +172,12 @@ def edit_profile(username):
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         db.session.commit()
-        flash('changes saved')
+        flash(_('changes saved'))
         return redirect(url_for('user', username=current_user.username))
     elif request.method == 'GET':       # if the form is asked for the first time (GET), is pre-populated with database info. it wont happend if there is a validation error(POST)
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html', form = form, title = 'edit profile - {}'.format(current_user.username))
+    return render_template('edit_profile.html', form = form, title = _('edit profile - {}'.format(current_user.username)))
 
 @app.route('/follow/<username>', methods=['POST'])
 @login_required
@@ -183,15 +188,15 @@ def follow(username):
         user = Users.query.filter_by(username = username).first()  #search on database the user with the given username
         # managing of wrong cases
         if user is None:
-            flash('user {} not found'.format(username))
+            flash(_('user {} not found'.format(username)))
             return redirect (url_for('index'))
         if user == current_user:
-            flash ('no autoerothism please')
+            flash (_('no autoerothism please'))
             return redirect(url_for('user', username=username))
         # calls of the follow function
         current_user.follow(user)
         db.session.commit()
-        flash ('now you follow {}'.format(username))
+        flash (_('now you follow {}'.format(username)))
         return redirect (url_for('user', username=username))
     else :
         return redirect (url_for('index'))
@@ -207,14 +212,13 @@ def unfollow(username):
     if form.validate_on_submit():
         user = Users.query.filter_by(username = username).first()
         if user is None:
-            flash('user {} not found'.format(username))
+            flash(_('user {} not found'.format(username)))
             return redirect (url_for('index'))
         if user == current_user:
-            flash ('no autoerothism please')
             return redirect(url_for('user', username=username))
         current_user.unfollow(user)
         db.session.commit()
-        flash ('now you don\' follow {} anymore'.format(username))
+        flash (_('now you don\' follow {} anymore'.format(username)))
         return redirect (url_for('user', username=username))
     else :
         return redirect (url_for('index'))
@@ -233,7 +237,7 @@ def feed():
         post = Posts(body= form.post.data, author = current_user)  
         db.session.add(post)
         db.session.commit()
-        flash('posted!')
+        flash(_('posted!'))
         form.post.data = ""
     # pagination handling
     page = request.args.get('page', 1, type=int)
@@ -244,7 +248,7 @@ def feed():
     prev_url = url_for('feed', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     
     form_del = EmptyForm()  # other form for delete posts
-    return render_template('feed.html', form = form, form_del = form_del, title = "proj", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', form = form, form_del = form_del, title = "Feed", posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 @app.route('/')
@@ -263,7 +267,7 @@ def explore():
     prev_url = url_for('explore', page = posts.prev_num) if posts.has_prev else None # prev_num is a Paginate() atribute
     # return the template of proj page because is very similar, but without the form to insert posts. 
     # must add a condition in the template to prevent a crash
-    return render_template('feed.html', title = "Explore", posts = posts, next_url = next_url, prev_url= prev_url)
+    return render_template('feed.html', title = _("Explore"), posts = posts, next_url = next_url, prev_url= prev_url)
 
 
 
@@ -276,5 +280,5 @@ def delete_post(del_post_id):
         del_post = Posts.query.filter_by(id = del_post_id).first()
         db.session.delete(del_post)
         db.session.commit()
-        flash('post deleted succesfully')
+        flash(_('post deleted succesfully'))
     return redirect (url_for({{request.endpoint}}))

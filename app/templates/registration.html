@@ -10,14 +10,14 @@
       <li class="breadcrumb-item active" aria-current="page">{{request.endpoint}}</li>
     </ol>
 </nav>
-    <h1>Registration</h1>
+    <h1>{{_('Registration')}}</h1>
     <div class="row">
         <div class="col-md-4">
             {{ wtf.quick_form(form)}}
         </div>
     </div>
     <p>
-        already a User?
-        <a href="{{url_for('login')}}">Sign In</a>
+       {{_('already a User?')}}
+        <a href="{{url_for('login')}}">{{_('Sign In')}}</a>
     </p>
 {% endblock %}

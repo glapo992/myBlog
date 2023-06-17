@@ -10,18 +10,18 @@
     </ol>
 </nav>
 
-    <h1>Log In</h1>
+    <h1>{{_('Log In')}}</h1>
     <div class="row">
         <div class="col-md-4">
             {{ wtf.quick_form(form)}}
         </div>
     </div>
     <p>
-        new User?
-        <a href="{{url_for('registration')}}">Register</a>
+        {{_('new User?')}}
+        <a href="{{url_for('registration')}}">{{_('Register')}}</a>
     </p>
     <p>
-        forgot password? 
-        <a href="{{url_for('reset_password_request')}}">click here to reset password</a>
+        {{_('forgot password? ')}}
+        <a href="{{url_for('reset_password_request')}}">{{_('click here to reset password')}}</a>
     </p>
 {% endblock %}
