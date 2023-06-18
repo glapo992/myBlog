@@ -136,13 +136,14 @@ pybabel extract -F babel.cfg -k _l -o messages.pot .
 The pybabel extract command reads the configuration file given in the -F option, then scans all the code and template files in the directories that match the configured sources, starting from the directory given in the command (the current directory or . in this case). By default, pybabel will look for _() as a text marker, but I have also used the lazy version, which I imported as _l(), so I need to tell the tool to look for those too with the -k _l. The -o option provides the name of the output file.
 the file can be deleted and recreated running the command again. it can be done when new text is added to the code
 
-### gegerating code languages
+### generating code languages
 this command uses messages.pot as ref to generate a lang catalog i the given directory
 ```
 pybabel init -i messages.pot -d app/translations -l it
 ```
 creating catalog app/translations/it/LC_MESSAGES/messages.po based on messages.pot
 than the message.po file created must be edited with transaltion manually
+
 ### compiling messages.po
 the file must be compilet to be used runtime with the command:
 ```

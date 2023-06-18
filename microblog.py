@@ -1,6 +1,10 @@
 """ fhe 'flask run' comamnd executes this module, which inports the app itself and the database"""
 from app import app, db 
 
+# implementation onf cli command for translation support, optional.
+# only import is needed because the decorator will run the commands
+from app import cli
+
 
 # this is added so the app can run calling this file with python and can set port and debug mode
 # without this statement, run in the root folder the command flask run

@@ -22,7 +22,8 @@ from app.email import send_password_reset_email
 
 #language support
 # import the function _() that acts like a wrapper arpund the text to translate, lazy_gettext() does the same but waits an http request before transalte the text
-from flask_babel import _, lazy_gettext as l_
+from flask_babel import _, get_locale
+from flask import g
 
 
 
@@ -30,10 +31,12 @@ from flask_babel import _, lazy_gettext as l_
 # the decorated function is executed right before ANY view function in the application.
 @app.before_request 
 def before_request():
-    """records the timedate of the visit of a user and saves it in the db"""
+    #records the timedate of the visit of a user and saves it in the db
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+    # conversion of locale() to str so it is translatable
+    g.locale= str(get_locale())
 #---------------------
 
 

@@ -7,13 +7,13 @@
         </td>
         <td class="post_body">
             <a href="{{url_for('user', username = post.author.username)}}"> {{post.author.username}}</a> 
-            says: {{ moment(post.timestamp).fromNow() }}<br> 
+            {{_('says')}}: {{ moment(post.timestamp).fromNow() }}<br> 
             {{post.body}}
         </td>
         <td navbar-right>{% if current_user == post.author and form_del %}
             <form action="{{url_for('delete_post', del_post_id = post.id)}}", method ='post'>
                 {{ form_del.hidden_tag() }}
-                {{ form_del.submit(value = 'Delete post') }}
+                {{ form_del.submit(value = _('Delete post')) }}
             </form>
             {% endif %}</td>
             

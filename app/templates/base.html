@@ -13,6 +13,8 @@ welcome to the page
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
+    {{ moment.lang(g.locale) }}
+
 {% endblock scripts %}
 
 
