@@ -1,10 +1,8 @@
+from flask import current_app
 from flask_mail import Message
 from app import mail
 
 # actually send the email
-
-from app import app
-
 from threading import Thread
 
 
@@ -34,6 +32,7 @@ def send_email(subject, sender, recipients, text_body:str, html_body):
     msg = Message(subject=subject, sender=sender, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
-    # enable multithread to send email async
-    Thread(target=send_async_email, args=(app, msg)).start()
+    # enable multithread to send email async, get_current_object is the real application istance
+    # here the app is passed as arg to a background thread. current_app is conext-aware var
+    Thread(target=send_async_email, args=(current_app._get_current_object(), msg)).start()
 

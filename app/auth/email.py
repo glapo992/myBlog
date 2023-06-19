@@ -1,6 +1,6 @@
 # actually send the email
 from flask import render_template
-from app import app
+from app import current_app
 
 from app.email import send_email
 
@@ -45,7 +45,7 @@ def send_password_reset_email(user):
     """
     token = user.get_reset_password_token() # 
     send_email('reset password',
-                sender=app.config['ADMINS'][0], # email addr defined in the config file
+                sender=current_app.config['ADMINS'][0], # email addr defined in the config file
                 recipients=[user.email], 
                 text_body=render_template('email_templates/reset_pwd.txt', user = user, token = token),    # txt message TODO:both must still be created
                 html_body=render_template('email_templates/reset_pwd.html', user = user, token = token))   #html template 

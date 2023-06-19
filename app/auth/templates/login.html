@@ -5,7 +5,7 @@
 {% block app_content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{request.endpoint}}</li>
     </ol>
 </nav>
@@ -18,10 +18,10 @@
     </div>
     <p>
         {{_('new User?')}}
-        <a href="{{url_for('registration')}}">{{_('Register')}}</a>
+        <a href="{{url_for('auth.registration')}}">{{_('Register')}}</a>
     </p>
     <p>
         {{_('forgot password? ')}}
-        <a href="{{url_for('reset_password_request')}}">{{_('click here to reset password')}}</a>
+        <a href="{{url_for('auth.reset_password_request')}}">{{_('click here to reset password')}}</a>
     </p>
 {% endblock %}

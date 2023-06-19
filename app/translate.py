@@ -1,7 +1,6 @@
-import json 
 import requests
 from flask_babel import _
-from app import app
+from app import current_app
 
 def translate(text:str, source_language:str, dest_language:str)->str:
     """translate a text from the original lang to a target lang with Microsoft API
@@ -15,11 +14,11 @@ def translate(text:str, source_language:str, dest_language:str)->str:
     :return: text translated
     :rtype: str
     """
-    if 'MS_TRANSLATOR_KEY' not in app.config or not app.config['MS_TRANSLATOR_KEY']:
+    if 'MS_TRANSLATOR_KEY' not in current_app.config or not current_app.config['MS_TRANSLATOR_KEY']:
         return _('Error: translation service not configured') 
     # from microsoft documentation for api connection
     auth = {
-        'Ocp-Apim-Subscription-Key': app.config['MS_TRANSLATOR_KEY'],
+        'Ocp-Apim-Subscription-Key': current_app.config['MS_TRANSLATOR_KEY'],
         'Ocp-Apim-Subscription-Region': 'westus2'}
     # send a post request to microsoft API
     r = requests.post('https://api.cognitive.microsofttranslator.com'
