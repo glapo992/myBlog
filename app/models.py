@@ -154,6 +154,7 @@ class Posts(db.Model):
     body      = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index = True, default=datetime.utcnow)  # utcnow is a function and is passed completely (without "()"), not the return value, so the timestamp is converted to the user's machine time
     user_id   = db.Column(db.Integer, db.ForeignKey('users.id')) # how to set a foregin key. the user table is used, not the class User as above
+    language  = db.Column(db.String(5))
 
     def __repr__(self):
         return '<Post: {}>'.format(self.body)

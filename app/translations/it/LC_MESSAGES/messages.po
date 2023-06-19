@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-18 00:22+0200\n"
+"POT-Creation-Date: 2023-06-19 14:46+0200\n"
 "PO-Revision-Date: 2023-06-17 23:45+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -96,66 +96,74 @@ msgstr "Nuova password"
 msgid "change password"
 msgstr "cambia password"
 
-#: app/routes.py:64
+#: app/routes.py:83
 msgid "invalid username or pw"
 msgstr "username o password non validi"
 
-#: app/routes.py:76
+#: app/routes.py:95 app/templates/registration.html:21
 msgid "Sign In"
 msgstr "Accedi"
 
-#: app/routes.py:95
+#: app/routes.py:114
 msgid "registration ok"
 msgstr "registrazione avvenuta"
 
-#: app/routes.py:97 app/templates/base.html:42
+#: app/routes.py:116 app/templates/base.html:60
 #: app/templates/registration.html:13
 msgid "Registration"
 msgstr "Registrazione"
 
-#: app/routes.py:111
+#: app/routes.py:130
 msgid "check your inbox"
 msgstr "controlla la tua casella mail"
 
-#: app/routes.py:134
+#: app/routes.py:153
 msgid "password changed"
 msgstr "password cambiata"
 
-#: app/routes.py:175
+#: app/routes.py:194
 msgid "changes saved"
 msgstr "modifiche salvate"
 
-#: app/routes.py:180
+#: app/routes.py:199
 msgid "edit profile - {}"
 msgstr "modifica profilo - {}"
 
-#: app/routes.py:191 app/routes.py:215
+#: app/routes.py:210 app/routes.py:234
 msgid "user {} not found"
 msgstr "utente {} non trovato"
 
-#: app/routes.py:194
+#: app/routes.py:213
 msgid "no autoerothism please"
 msgstr "evitiamo autoerotismo perfavore"
 
-#: app/routes.py:199
+#: app/routes.py:218
 msgid "now you follow {}"
 msgstr "adesso segui {}"
 
-#: app/routes.py:221
+#: app/routes.py:240
 msgid "now you don' follow {} anymore"
 msgstr "non segui più {}"
 
-#: app/routes.py:240
+#: app/routes.py:265
 msgid "posted!"
 msgstr "postato!"
 
-#: app/routes.py:270
+#: app/routes.py:295
 msgid "Explore"
 msgstr "Esplora"
 
-#: app/routes.py:283
+#: app/routes.py:308
 msgid "post deleted succesfully"
 msgstr "post cancellato con successo"
+
+#: app/translate.py:19
+msgid "Error: translation service not configured"
+msgstr "Errore: il servizio di traduzione non è disponibile"
+
+#: app/translate.py:29
+msgid "Error: the translation service failed."
+msgstr "Errore: il servizio di traduzione non funzia"
 
 #: app/templates/_pagination.html:5
 msgid "Newer posts"
@@ -165,18 +173,36 @@ msgstr "Nuovi post"
 msgid "Older posts"
 msgstr "Vecchi post"
 
-#: app/templates/feed.html:13
-msgid "the secret project only"
-msgstr "Il progetto segreto che solo"
+#: app/templates/_post.html:10
+msgid "says"
+msgstr "dice"
+
+#: app/templates/_post.html:16
+#, fuzzy
+msgid "Delete post"
+msgstr "Vecchi post"
+
+#: app/templates/_post.html:27
+msgid "Translate"
+msgstr "Traduci"
+
+#: app/templates/base.html:29
+msgid "Error, impossible contact the server"
+msgstr "Errore, impossibile contattare il server"
 
 #: app/templates/feed.html:13
-#, fuzzy
-msgid "can see"
-msgstr "può vedere"
+#, fuzzy, python-format
+msgid "the secret project only %(username)s can see"
+msgstr "Il progetto segreto che solo %(username)s può vedere"
 
 #: app/templates/index.html:11
 msgid "basic homepage of the website"
 msgstr "Homepage del sito"
+
+#: app/templates/login.html:13
+#, fuzzy
+msgid "Log In"
+msgstr "Accedi"
 
 #: app/templates/login.html:20
 msgid "new User?"

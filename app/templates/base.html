@@ -10,10 +10,26 @@ welcome to the page
 {% endblock title %}
 
 <!--include moment.js, the lib for timezone rendering. super() allows to preserv content from base template-->
+<!--added also script for the translation of the user text-->
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
     {{ moment.lang(g.locale) }}
+
+    <script>
+        function translate(sourceElem, destElem, sourceLang, destLang) {
+            $(destElem).html('<img src="{{ url_for('static/imgs', filename='loading.gif') }}">');
+            $post('/translate', {
+                text:$(sourceElem).text(),
+                source_language=sourceLang,
+                dest_language=destLang
+            }).done(function(response){
+                $(destElem).text(response['text'])
+            }).fail(function(){
+                $(destElem).text("{{_('Error, impossible contact the server')}}");
+            });
+        }
+    </script>
 
 {% endblock scripts %}
 

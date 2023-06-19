@@ -7,8 +7,8 @@
         </td>
         <td class="post_body">
             <a href="{{url_for('user', username = post.author.username)}}"> {{post.author.username}}</a> 
-            {{_('says')}}: {{ moment(post.timestamp).fromNow() }}<br> 
-            {{post.body}}
+            {{_('says')}} {{ moment(post.timestamp).fromNow() }}<br> 
+            <span id="post{{post.id}}">{{post.body}}</span>   <!--assign a id to the span element that contains the post-->
         </td>
         <td navbar-right>{% if current_user == post.author and form_del %}
             <form action="{{url_for('delete_post', del_post_id = post.id)}}", method ='post'>
@@ -16,6 +16,18 @@
                 {{ form_del.submit(value = _('Delete post')) }}
             </form>
             {% endif %}</td>
+        <td>
+            {% if post.language and post.language != g.locale %}
+            <span id="translation{{post.id}}">  <!--assign a id to the span element that contains the translation link-->
+            <!-- the <a> tag can accept any js code if prefixed with javascript:-->
+                <a href="javascript:translate(
+                '#post{{post.id}}',
+                '#translation{{post.id}}',
+                '{{post.language}}', 
+                '{{ g.locale }}';)">{{_('Translate')}}</a>
+        </span>
+            {% endif %}
+        </td>
             
 
     </tr>
