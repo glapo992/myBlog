@@ -159,3 +159,19 @@ pybabel update -i messages.pot -d app/translations
 ```
 the extract is the same than above, the merges the new message.po file jus created
 than is possible to edit angain and re compile it with the command above
+
+# ajax
+js to automatically translate text
+to identify language of the posts use python lib langdetect
+the detection is made when the post is written, not when displayed (otimization)
+the lang detected is stored in the db table
+
+### translation services
+microsoft offers a translation solution for free but requires Azure accout (see deepl free api instead of this)
+Azure portal/create a resource/translator --> create button 
+go to "go to resource/keys and endpoint" and copy the key
+
+create env variableand add to configuration
+ MS_TRANSLATOR_KEY=<key> 
+
+  MS_TRANSLATOR_KEY=os.environ.get('MS_TRANSLATOR_KEY')

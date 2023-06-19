@@ -23,7 +23,11 @@ from app.email import send_password_reset_email
 #language support
 # import the function _() that acts like a wrapper arpund the text to translate, lazy_gettext() does the same but waits an http request before transalte the text
 from flask_babel import _, get_locale
-from flask import g
+from flask import g 
+# lang detection ajax
+from langdetect import detect, LangDetectException
+from flask import jsonify
+from app.translate import translate
 
 
 
@@ -38,6 +42,18 @@ def before_request():
     # conversion of locale() to str so it is translatable
     g.locale= str(get_locale())
 #---------------------
+
+#------TRANSLATION SERVICE-----------
+@app.route('/translate', methods=['POST'])
+@login_required
+def translate_text():
+    # invocatoion of the transalte function with datas from the request 
+    return jsonify({'text':translate(
+                                        request.form['text'],
+                                        request.form['source_language'],
+                                        request.form['dest_language'])})
+
+
 
 
 
@@ -237,7 +253,13 @@ def feed():
     """view that shows only posts from user and followed profiles and allows the user to write new posts"""
     form = PostForm()
     if form.validate_on_submit():
-        post = Posts(body= form.post.data, author = current_user)  
+        # add language detection with ajax
+        try:
+            language = detect(text=form.post.data)
+        except LangDetectException:
+            language = ""
+        
+        post = Posts(body= form.post.data, author = current_user, language = language)  
         db.session.add(post)
         db.session.commit()
         flash(_('posted!'))
@@ -277,11 +299,11 @@ def explore():
 @app.route('/delete_post/<del_post_id>' ,methods=['POST'])
 @login_required
 def delete_post(del_post_id):
-    """ function to delete a post/Users/giuliolapovich/libri/progit.pdf from the database"""
+    """ function to delete a post from the database"""
     form = EmptyForm()
     if form.validate_on_submit():
         del_post = Posts.query.filter_by(id = del_post_id).first()
         db.session.delete(del_post)
         db.session.commit()
         flash(_('post deleted succesfully'))
-    return redirect (url_for({{request.endpoint}}))
+    return redirect (url_for('feed'))

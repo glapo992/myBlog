@@ -50,3 +50,5 @@ class Config(object):
     # language support
     # list of supported languages codes for Babel extension
     LANGUAGES = ['en','it']
+    # key for microsoft service translator
+    MS_TRANSLATOR_KEY=os.environ.get('MS_TRANSLATOR_KEY')
