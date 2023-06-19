@@ -35,6 +35,17 @@ except:
     raise Exception('impossible to read the configuration')
 #-----------------------------------
 
+
+#BLUEPRINT CONFIG------------------------------
+# errors
+from app.errors import bp as errors_bp # import bp (as named in its module and set alias to specify that is the error bp. same workflow with other blueprints)
+app.register_blueprint(errors_bp) # registration of bp
+
+from app.auth import bp as auth_bp
+app.register_blueprint(auth_bp, url_prefix='/auth') # prefix is optional, add to all the bp routes this prefix
+
+#-----------------------------------
+
 #BOOTSTRAP------------------------------
 #init of bootsrap object, creates a new html base page called bootstrap/base.html, the actual base.html must be adapted to extend bootstrap version
 bootstrap = Bootstrap(app=app) 
@@ -148,5 +159,5 @@ if not app.debug:
 #-------------------------------------------------------
 
 
-from app import routes, models, errors # this goes at the bottom to avoid circular imports. here goes the modules that imports app
+from app import routes, models # this goes at the bottom to avoid circular imports. here goes the modules that imports app
 

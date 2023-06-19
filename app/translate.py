@@ -4,7 +4,7 @@ from flask_babel import _
 from app import app
 
 def translate(text:str, source_language:str, dest_language:str)->str:
-    """translate a text from the original lang to a target lang
+    """translate a text from the original lang to a target lang with Microsoft API
 
     :param text: the text to translate
     :type text: str
