@@ -8,10 +8,11 @@ class Config(object):
     #! REMOVE THE .flaskenv FILE FROM GIT BEFORE DEPLOY AND SET A REAL SECRET_KEY
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_password' # var used as key for cryptogtaphy and tokens, used by wtf 
     
-    # tryes to reate a connection with postgres db reading from configs, if cant, uses the local db
+    # tryies to create a connection with postgres db reading from configs, if cant, uses the local db
     # TODO: remove the local db in prod 
     try:
-        PASSWORD = os.environ.get('DB_PASSWORD') 
+        PASSWORD = "" 
+        #PASSWORD = os.environ.get('DB_PASSWORD')  #uncomment this line to use with postgresDB 
         USERNAME = os.environ.get('DB_USERNAME') 
         HOST     = os.environ.get('DB_HOST') 
         DB_NAME  = os.environ.get('DB_DB_NAME') 
