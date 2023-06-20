@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-19 14:46+0200\n"
+"POT-Creation-Date: 2023-06-20 19:48+0200\n"
 "PO-Revision-Date: 2023-06-17 23:45+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -18,226 +18,207 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: app/__init__.py:72
+#: app/__init__.py:55
 msgid "Please, log in to access this page"
 msgstr "Prego, eseguire l'accesso per accedere a questa pagina"
 
-#: app/forms.py:8 app/forms.py:14 app/forms.py:36
+#: app/translate.py:21
+msgid "Error: translation service not configured"
+msgstr "Errore: il servizio di traduzione non è disponibile"
+
+#: app/translate.py:31
+msgid "Error: the translation service failed."
+msgstr "Errore: il servizio di traduzione non funzia"
+
+#: app/auth/forms.py:9 app/auth/forms.py:15 app/main/forms.py:8
+#: app/main/forms.py:14 app/main/forms.py:36
 msgid "Username"
 msgstr "Nome Utente"
 
-#: app/forms.py:9 app/forms.py:16
+#: app/auth/forms.py:10 app/auth/forms.py:17 app/main/forms.py:9
+#: app/main/forms.py:16
 #, fuzzy
 msgid "Password"
 msgstr "password cambiata"
 
-#: app/forms.py:10
+#: app/auth/forms.py:11 app/main/forms.py:10
 msgid "Remember me"
 msgstr "Ricordami"
 
-#: app/forms.py:11
+#: app/auth/forms.py:12 app/main/forms.py:11
 #, fuzzy
 msgid "sign in"
 msgstr "Accedi"
 
-#: app/forms.py:15 app/forms.py:67
+#: app/auth/forms.py:16 app/main/forms.py:15 app/main/forms.py:67
 msgid "email"
 msgstr "e-mail"
 
-#: app/forms.py:17 app/forms.py:73
+#: app/auth/forms.py:18 app/auth/forms.py:42 app/main/forms.py:17
+#: app/main/forms.py:73
 #, fuzzy
 msgid "Confirm Password"
 msgstr "Conferma password"
 
-#: app/forms.py:18
+#: app/auth/forms.py:19 app/main/forms.py:18
 #, fuzzy
 msgid "Register now"
 msgstr "Registrati"
 
-#: app/forms.py:25
+#: app/auth/forms.py:26 app/main/forms.py:25
 msgid "username already exixts"
 msgstr "il nome utente esiste già"
 
-#: app/forms.py:31
+#: app/auth/forms.py:32 app/main/forms.py:31
 msgid "email already used"
-msgstr "e-mamil già in uso"
+msgstr "e-mail già in uso"
 
-#: app/forms.py:37
-msgid "About me"
-msgstr "Su di me"
-
-#: app/forms.py:38
-msgid "Edit"
-msgstr "Modifica"
-
-#: app/forms.py:54
-msgid "Please choose another user"
-msgstr "Prego, scegliere un altro nome Utente"
-
-#: app/forms.py:58 app/forms.py:63
-msgid "Submit"
-msgstr "Conferma"
-
-#: app/forms.py:62
-msgid "say something"
-msgstr "Dì qualcosa"
-
-#: app/forms.py:68
+#: app/auth/forms.py:37 app/main/forms.py:68
 msgid "Request Password restet"
 msgstr "Richiedi reset della password"
 
-#: app/forms.py:72
+#: app/auth/forms.py:41 app/main/forms.py:72
 #, fuzzy
 msgid "New Password"
 msgstr "Nuova password"
 
-#: app/forms.py:74
+#: app/auth/forms.py:43 app/main/forms.py:74
 #, fuzzy
 msgid "change password"
 msgstr "cambia password"
 
-#: app/routes.py:83
+#: app/auth/routes.py:32
 msgid "invalid username or pw"
 msgstr "username o password non validi"
 
-#: app/routes.py:95 app/templates/registration.html:21
+#: app/auth/routes.py:44
 msgid "Sign In"
 msgstr "Accedi"
 
-#: app/routes.py:114
+#: app/auth/routes.py:63
 msgid "registration ok"
 msgstr "registrazione avvenuta"
 
-#: app/routes.py:116 app/templates/base.html:60
-#: app/templates/registration.html:13
+#: app/auth/routes.py:65 app/templates/base.html:60
 msgid "Registration"
 msgstr "Registrazione"
 
-#: app/routes.py:130
+#: app/auth/routes.py:79
 msgid "check your inbox"
 msgstr "controlla la tua casella mail"
 
-#: app/routes.py:153
+#: app/auth/routes.py:102
 msgid "password changed"
 msgstr "password cambiata"
 
-#: app/routes.py:194
+#: app/main/forms.py:37
+msgid "About me"
+msgstr "Su di me"
+
+#: app/main/forms.py:38
+msgid "Edit"
+msgstr "Modifica"
+
+#: app/main/forms.py:54
+msgid "Please choose another user"
+msgstr "Prego, scegliere un altro nome Utente"
+
+#: app/main/forms.py:58 app/main/forms.py:63
+msgid "Submit"
+msgstr "Conferma"
+
+#: app/main/forms.py:62
+msgid "say something"
+msgstr "Dì qualcosa"
+
+#: app/main/routes.py:103
 msgid "changes saved"
 msgstr "modifiche salvate"
 
-#: app/routes.py:199
+#: app/main/routes.py:108
 msgid "edit profile - {}"
 msgstr "modifica profilo - {}"
 
-#: app/routes.py:210 app/routes.py:234
+#: app/main/routes.py:123 app/main/routes.py:151
 msgid "user {} not found"
 msgstr "utente {} non trovato"
 
-#: app/routes.py:213
+#: app/main/routes.py:126
 msgid "no autoerothism please"
 msgstr "evitiamo autoerotismo perfavore"
 
-#: app/routes.py:218
+#: app/main/routes.py:131
 msgid "now you follow {}"
 msgstr "adesso segui {}"
 
-#: app/routes.py:240
+#: app/main/routes.py:157
 msgid "now you don' follow {} anymore"
 msgstr "non segui più {}"
 
-#: app/routes.py:265
+#: app/main/routes.py:182
 msgid "posted!"
 msgstr "postato!"
 
-#: app/routes.py:295
+#: app/main/routes.py:211
 msgid "Explore"
 msgstr "Esplora"
 
-#: app/routes.py:308
+#: app/main/routes.py:224
 msgid "post deleted succesfully"
 msgstr "post cancellato con successo"
-
-#: app/translate.py:19
-msgid "Error: translation service not configured"
-msgstr "Errore: il servizio di traduzione non è disponibile"
-
-#: app/translate.py:29
-msgid "Error: the translation service failed."
-msgstr "Errore: il servizio di traduzione non funzia"
-
-#: app/templates/_pagination.html:5
-msgid "Newer posts"
-msgstr "Nuovi post"
-
-#: app/templates/_pagination.html:10
-msgid "Older posts"
-msgstr "Vecchi post"
-
-#: app/templates/_post.html:10
-msgid "says"
-msgstr "dice"
-
-#: app/templates/_post.html:16
-#, fuzzy
-msgid "Delete post"
-msgstr "Vecchi post"
-
-#: app/templates/_post.html:27
-msgid "Translate"
-msgstr "Traduci"
 
 #: app/templates/base.html:29
 msgid "Error, impossible contact the server"
 msgstr "Errore, impossibile contattare il server"
 
-#: app/templates/feed.html:13
-#, fuzzy, python-format
-msgid "the secret project only %(username)s can see"
-msgstr "Il progetto segreto che solo %(username)s può vedere"
+#~ msgid "Newer posts"
+#~ msgstr "Nuovi post"
 
-#: app/templates/index.html:11
-msgid "basic homepage of the website"
-msgstr "Homepage del sito"
+#~ msgid "Older posts"
+#~ msgstr "Vecchi post"
 
-#: app/templates/login.html:13
-#, fuzzy
-msgid "Log In"
-msgstr "Accedi"
+#~ msgid "says"
+#~ msgstr "dice"
 
-#: app/templates/login.html:20
-msgid "new User?"
-msgstr "Nuovo Utente?"
+#~ msgid "Delete post"
+#~ msgstr "Vecchi post"
 
-#: app/templates/login.html:21
-msgid "Register"
-msgstr "Registrati"
+#~ msgid "Translate"
+#~ msgstr "Traduci"
 
-#: app/templates/login.html:24
-msgid "forgot password? "
-msgstr "password dimenticata?"
+#~ msgid "the secret project only %(username)s can see"
+#~ msgstr "Il progetto segreto che solo %(username)s può vedere"
 
-#: app/templates/login.html:25
-msgid "click here to reset password"
-msgstr "clicca qui per resettare la password"
+#~ msgid "basic homepage of the website"
+#~ msgstr "Homepage del sito"
 
-#: app/templates/registration.html:20
-msgid "already a User?"
-msgstr "già un Utente?"
+#~ msgid "Log In"
+#~ msgstr "Accedi"
 
-#: app/templates/user.html:12
-msgid "Edit your profile"
-msgstr "Modifica il tuo profilo"
+#~ msgid "new User?"
+#~ msgstr "Nuovo Utente?"
 
-#: app/templates/user.html:32
-msgid "Last seen on:"
-msgstr "Ultimo accesso:"
+#~ msgid "Register"
+#~ msgstr "Registrati"
 
-#: app/templates/email_templates/reset_pwd.html:3
-msgid "to reset the password click in the link:"
-msgstr "per resettare la password clicca sul link"
+#~ msgid "forgot password? "
+#~ msgstr "password dimenticata?"
 
-#: app/templates/email_templates/reset_pwd.html:4
-#, fuzzy
-msgid "Reset Password"
-msgstr "Reimposta password"
+#~ msgid "click here to reset password"
+#~ msgstr "clicca qui per resettare la password"
+
+#~ msgid "already a User?"
+#~ msgstr "già un Utente?"
+
+#~ msgid "Edit your profile"
+#~ msgstr "Modifica il tuo profilo"
+
+#~ msgid "Last seen on:"
+#~ msgstr "Ultimo accesso:"
+
+#~ msgid "to reset the password click in the link:"
+#~ msgstr "per resettare la password clicca sul link"
+
+#~ msgid "Reset Password"
+#~ msgstr "Reimposta password"
 
