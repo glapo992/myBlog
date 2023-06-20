@@ -5,19 +5,26 @@ run in terminal : python3 tests.py"""
 import os
 from datetime import datetime, timedelta
 import unittest
-from app import app, db
+from app import create_app, db, current_app
 from app.models import Users, Posts
+from config import Config
 
 # unittest uses another database so it not mess with original datas
-os.environ['DATABASE_URL'] = 'sqlite://'
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'
 
 class UserModelCase(unittest.TestCase):
 
     def setUp(self) -> None:
         """set the context of the test, executed the beginning, the context stays in memory and is not saved"""
-        self.app_context = app.app_context()  # create a new application context
+        self.app = create_app(TestConfig)
+        print(TestConfig.SQLALCHEMY_DATABASE_URI)
+        self.app_context = self.app.app_context()  # create a new application context
         self.app_context.push()
         db.create_all()   # creates all db tables
+        print(current_app.config['SQLALCHEMY_DATABASE_URI'])
 
     def tearDown(self) -> None:
         """clean the context of the test. executed at the end of the test by unittest"""
