@@ -91,7 +91,29 @@ def create_app(config_class = Config):
     #-----------------------------------
 
     if not app.debug and not app.testing:  # only run in production
-    #LOG ERRORS TO A FILE------------------------------
+       #LOG ERRORS TO EMAIL------------------------------
+        if app.config['MAIL_SERVER']:    # if not set, the whole service is dectivated
+            auth = None
+            if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:  # sets auth credentials
+                auth = (app.config['MAIL_USERNAME'], 
+                        app.config['MAIL_PASSWORD'])
+            secure = None
+            if app.config['MAIL_USE_TLS']:
+                secure = ()
+            #istance of the handler which sends email and its configuration
+            mail_handler = SMTPHandler(
+                mailhost=(app.config['MAIL_SERVER'],
+                          app.config['MAIL_PORT']), 
+                fromaddr='no-reply@' + app.config['MAIL_SERVER'],
+                toaddrs=app.config['ADMINS'], 
+                subject='Microblog error',
+                credentials=auth, secure=secure) 
+            
+            mail_handler.setLevel(logging.ERROR)  # set the logs level that are sent
+
+            app.logger.addHandler(mail_handler)   # here is defined how errors are handled in the app
+
+             #LOG ERRORS TO A FILE------------------------------
         try:
             if not os.path.exists('logs'):  # if the specified path of the folder doesnt exists, it is created now
                 os.mkdir('logs')
@@ -108,26 +130,7 @@ def create_app(config_class = Config):
             app.logger.info('Microblog startup')
         except:
             raise Exception('error in writing logs on a file')
-
-    #LOG ERRORS TO EMAIL------------------------------
-        if app.config['MAIL_SERVER']:    # if not set, the whole service is dectivated
-            auth = None
-            if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:  # sets auth credentials
-                auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-            secure = None
-            if app.config['MAIL_USE_TLS']:
-                secure = ()
-            #istance of the handler which sends email and its configuration
-            mail_handler = SMTPHandler(
-                mailhost=(app.config['MAIL_SERVER'], ['MAIL_PORT']), 
-                fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-                toaddrs=app.config['ADMINS'], subject='Microblog error',
-                credentials=auth, secure=secure) 
-            
-            mail_handler.setLevel(logging.ERROR)  # set the logs level that are sent
-
-            app.logger.addHandler(mail_handler)   # here is defined how errors are handled in the app
-    
+        
     # this is the retutn app object
     return app
 
