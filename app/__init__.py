@@ -67,7 +67,7 @@ def create_app(config_class = Config):
     :type config_class: Config, optional
     """
     app = Flask(__name__)
-    app.config.from_object(Config) # import configs from the Class Config in the as-named module. the values are accessed with a dict-like statement (app.config['SECRET_KEY'])
+    app.config.from_object(config_class) # import configs from the Class Config in the as-named module. the values are accessed with a dict-like statement (app.config['SECRET_KEY'])
 
     db.init_app(app)
     migrate.init_app(app, db)
