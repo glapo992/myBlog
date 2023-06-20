@@ -13,7 +13,8 @@ from hashlib import md5 # optional, just for Gravatar service for avatar images
 # token generation for pw reset request
 import jwt 
 from time import time
-from app import app # needed to read config file ad access the secret_key
+
+from flask import current_app
 
 
 """ after a modificaion in the models, the migrate class will generate a script with the database version. 
@@ -113,8 +114,8 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         :return: token
         :rtype: jwt token
         """	    
-        token = jwt.encode(payload={'reset_password': self.id, 'exp': time() + exp_time}, key=app.config['SECRET_KEY'], algorithm='HS256')
-        print('sent key:', app.config['SECRET_KEY'])
+        token = jwt.encode(payload={'reset_password': self.id, 'exp': time() + exp_time}, key=current_app.config['SECRET_KEY'], algorithm='HS256')
+        print('sent key:', current_app.config['SECRET_KEY'])
         return token
     
     @staticmethod # staticmethods can be invoked directly from the class. do not recive the class as firts argument
@@ -127,7 +128,7 @@ class Users(UserMixin ,db.Model): # added UserMixin at the user class
         :rtype: Users
         """
         try:   # if token is expired an exception is raised
-            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
+            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
             print(id)
         except:
             print('in the except')

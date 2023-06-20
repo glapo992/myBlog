@@ -5,8 +5,8 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{request.endpoint}}</li>
+      <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{request.endpoint.split(".")[1]}}</li>
     </ol>
 </nav>
 <!-- current_user.username is the username of the current logged user -->

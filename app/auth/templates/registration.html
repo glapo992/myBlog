@@ -6,8 +6,8 @@
 {% block app_content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{request.endpoint}}</li>
+      <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{request.endpoint.split(".")[1]}}</li>
     </ol>
 </nav>
     <h1>{{_('Registration')}}</h1>
@@ -18,6 +18,6 @@
     </div>
     <p>
        {{_('already a User?')}}
-        <a href="{{url_for('login')}}">{{_('Sign In')}}</a>
+        <a href="{{url_for('auth.login')}}">{{_('Sign In')}}</a>
     </p>
 {% endblock %}
